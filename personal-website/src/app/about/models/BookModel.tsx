@@ -98,10 +98,20 @@ export const BookModel = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      mountRef.current?.removeChild(renderer.domElement);
-    };
-  }, []);
+        // Dispose geometries
+        scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            object.geometry.dispose();
+            if (object.material instanceof THREE.Material) {
+              object.material.dispose();
+            }
+          }
+        });
+        
+        renderer.dispose();
+        mountRef.current?.removeChild(renderer.domElement);
+      };
+    }, []);
 
   return <div ref={mountRef} className="w-80 h-80" />;
 };

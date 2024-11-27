@@ -1,7 +1,8 @@
+'use client';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const BridgeModel = () => {
+export const BridgeModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
