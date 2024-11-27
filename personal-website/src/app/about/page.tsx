@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import React from 'react';
-import BridgeModel from './models/BridgeModel';
+import {BridgeModel} from './models/BridgeModel';
 import { LaptopModel } from './models/LaptopModel';
 import { BookModel } from './models/BookModel';
 import { UniversityModel } from './models/UniversityModel';
@@ -89,26 +89,26 @@ export default function About() {
         <motion.div 
           initial={{ opacity: 0.25 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0 }}
           className="space-y-24 py-12"
         >
           {sections.map((section, index) => (
             <motion.section
               key={section.title}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 1, x: index % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, x: 1 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0, ease: "easeOut" }}
               className={`flex flex-col ${
                 index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
               } gap-12 items-center`}
             >
               <motion.div 
                 className="flex-1 space-y-4"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 1, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0, delay: 0 }}
               >
                 <h2 className="text-3xl font-light text-gray-900 mb-6">
                   {section.title}
@@ -119,10 +119,10 @@ export default function About() {
               </motion.div>
               <motion.div 
                 className="relative w-80 h-80 flex-shrink-0"
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 1, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
+                transition={{ duration: 0.25, delay: 0.3 }}
               >
                 {section.component}
               </motion.div>
