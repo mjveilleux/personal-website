@@ -1,13 +1,16 @@
 'use client';
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
-
+import { motion } from 'framer-motion';
+import React from 'react';
+import BridgeModel from './models/BridgeModel';
+import { LaptopModel } from './models/LaptopModel';
+import { BookModel } from './models/BookModel';
+import { UniversityModel } from './models/UniversityModel';
+ import { ProjectModel } from './models/ProjectModel';
 
 interface Section {
-  title: string
-  content: React.ReactNode
-  image?: string
+  title: string;
+  content: React.ReactNode;
+  component: React.ReactNode;
 }
 
 const sections: Section[] = [
@@ -27,7 +30,7 @@ const sections: Section[] = [
         </p>
       </>
     ),
-    image: "/github_profile_pic.png"
+   component: <LaptopModel />
   },
   {
     title: "Academic Foundations",
@@ -39,7 +42,7 @@ const sections: Section[] = [
         how technology shapes economic growth.
       </p>
     ),
-    image: "/academic.jpg"
+    component: <UniversityModel />
   },
   {
     title: "Recent Projects",
@@ -53,7 +56,7 @@ const sections: Section[] = [
         </ul>
       </div>
     ),
-    image: "/projects.jpg"
+    component: <ProjectModel />
   },
   {
     title: "Teaching & Writing",
@@ -64,7 +67,7 @@ const sections: Section[] = [
         concepts and share insights from my research and practical applications.
       </p>
     ),
-    image: "/teaching.jpg"
+    component: <BookModel />
   },
   {
     title: "Life in the Bay",
@@ -75,61 +78,58 @@ const sections: Section[] = [
         analyzing data, you might find me writing about economics or working on my next project.
       </p>
     ),
-    image: "/bay.jpg"
+    component: <BridgeModel />
   }
-]
+];
 
 export default function About() {
-    return (
-      <div className="max-w-4xl mx-auto">
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
- initial={{ opacity: 0.25 }}
- animate={{ opacity: 1 }}
- transition={{ duration: 0 }}
- className="space-y-24 py-12"
->
- {sections.map((section, index) => (
-   <motion.section
-     key={section.title}
-     initial={{ opacity: 1, x: index % 2 === 0 ? -50 : 50 }}
-     whileInView={{ opacity: 1, x: 0 }}
-     viewport={{ once: true, amount: 0.2 }}
-     transition={{ duration: 0.7, ease: "easeOut" }}
-     className={`flex ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 items-center`}
-   >
-     <motion.div 
-       className="flex-1 space-y-4"
-       initial={{ opacity: 1, y: 20 }}
-       whileInView={{ opacity: 1, y: 0 }}
-       viewport={{ once: true, amount: 0.2 }}
-       transition={{ duration: 0.5, delay: 0 }}
-     >
-       <h2 className="text-3xl font-light mb-6">
-         {section.title}
-       </h2>
-       <div className="text-stone-700 leading-relaxed">
-         {section.content}
-       </div>
-     </motion.div>
-     {section.image && (
-       <motion.div 
-         className="relative w-80 h-80 flex-shrink-0"
-         initial={{ opacity: 1, scale: 0.9 }}
-         whileInView={{ opacity: 1, scale: 1 }}
-         viewport={{ once: true, amount: 0.2 }}
-         transition={{ duration: 0.5, delay: 0 }}
-       >
-         <Image
-           src={section.image}
-           alt={section.title}
-           fill
-           className="object-cover rounded-lg shadow-lg"
-         />
-       </motion.div>
-     )}
-   </motion.section>
- ))}
-</motion.div>
+          initial={{ opacity: 0.25 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-24 py-12"
+        >
+          {sections.map((section, index) => (
+            <motion.section
+              key={section.title}
+              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className={`flex flex-col ${
+                index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+              } gap-12 items-center`}
+            >
+              <motion.div 
+                className="flex-1 space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <h2 className="text-3xl font-light text-gray-900 mb-6">
+                  {section.title}
+                </h2>
+                <div className="text-stone-700 leading-relaxed">
+                  {section.content}
+                </div>
+              </motion.div>
+              <motion.div 
+                className="relative w-80 h-80 flex-shrink-0"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                {section.component}
+              </motion.div>
+            </motion.section>
+          ))}
+        </motion.div>
       </div>
-    )
-   }
+    </main>
+  );
+}
