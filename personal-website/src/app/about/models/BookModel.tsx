@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const toRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
 export const BookModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -10,13 +14,11 @@ export const BookModel = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
     renderer.setSize(320, 320);
     mountRef.current.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
-    
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
@@ -75,12 +77,58 @@ export const BookModel = () => {
     book.rotation.x = 0.2;
     scene.add(book);
 
+    let isRotating = false;
+    let previousMousePosition = {
+      x: 0,
+      y: 0
+    };
+
+    const startRotation = (event: MouseEvent) => {
+      isRotating = true;
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    const stopRotation = () => {
+      isRotating = false;
+    };
+
+    const rotate = (event: MouseEvent) => {
+      if (!isRotating) return;
+
+      const deltaMove = {
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y
+      };
+
+      const deltaRotationQuaternion = new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(
+          toRadians(deltaMove.y * 0.5),
+          toRadians(deltaMove.x * 0.5), 
+          0,
+          'XYZ'
+        ));
+
+      book.quaternion.multiplyQuaternions(deltaRotationQuaternion, book.quaternion);
+      previousMousePosition = {
+        x: event.clientX, 
+        y: event.clientY
+      };
+    };
+
+    mountRef.current.addEventListener('mousedown', startRotation);
+    mountRef.current.addEventListener('mousemove', rotate);
+    mountRef.current.addEventListener('mouseup', stopRotation);
+    mountRef.current.addEventListener('mouseout', stopRotation);
+
     camera.position.z = 6;
     camera.position.y = 0.5;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      book.rotation.y += 0.005;
+      book.rotation.y += 0.0075; // Add this line to maintain automatic rotation
       renderer.render(scene, camera);
     };
 

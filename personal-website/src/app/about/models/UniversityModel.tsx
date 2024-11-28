@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const toRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
 export const UniversityModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -98,12 +102,58 @@ export const UniversityModel = () => {
     const university = createUniversity();
     scene.add(university);
 
+    let isRotating = false;
+    let previousMousePosition = {
+      x: 0,
+      y: 0
+    };
+
+    const startRotation = (event: MouseEvent) => {
+      isRotating = true;
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    const stopRotation = () => {
+      isRotating = false;
+    };
+
+    const rotate = (event: MouseEvent) => {
+      if (!isRotating) return;
+
+      const deltaMove = {
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y
+      };
+
+      const deltaRotationQuaternion = new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(
+          toRadians(deltaMove.y * 0.5),
+          toRadians(deltaMove.x * 0.5), 
+          0,
+          'XYZ'
+        ));
+
+      university.quaternion.multiplyQuaternions(deltaRotationQuaternion, university.quaternion);
+      previousMousePosition = {
+        x: event.clientX, 
+        y: event.clientY
+      };
+    };
+
+    mountRef.current.addEventListener('mousedown', startRotation);
+    mountRef.current.addEventListener('mousemove', rotate);
+    mountRef.current.addEventListener('mouseup', stopRotation);
+    mountRef.current.addEventListener('mouseout', stopRotation);
+
     camera.position.z = 8;
     camera.position.y = 1;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      university.rotation.y += 0.005;
+      university.rotation.y -= 0.05; // Add this line to maintain automatic rotation
       renderer.render(scene, camera);
     };
 

@@ -2,6 +2,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const toRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
 export const BridgeModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -12,14 +16,12 @@ export const BridgeModel = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(320, 320); // Match your image dimensions
+    renderer.setSize(320, 320); 
     mountRef.current.appendChild(renderer.domElement);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
@@ -67,34 +69,73 @@ export const BridgeModel = () => {
     const bridge = createBridge();
     scene.add(bridge);
 
+    let isRotating = false;
+    let previousMousePosition = {
+      x: 0,
+      y: 0
+    };
+
+    const startRotation = (event: MouseEvent) => {
+      isRotating = true;
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    const stopRotation = () => {
+      isRotating = false;
+    };
+
+    const rotate = (event: MouseEvent) => {
+      if (!isRotating) return;
+
+      const deltaMove = {
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y
+      };
+
+      const deltaRotationQuaternion = new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(
+          toRadians(deltaMove.y * 0.5),
+          toRadians(deltaMove.x * 0.5), 
+          0,
+          'XYZ'
+        ));
+
+      bridge.quaternion.multiplyQuaternions(deltaRotationQuaternion, bridge.quaternion);
+      previousMousePosition = {
+        x: event.clientX, 
+        y: event.clientY
+      };
+    };
+
+    mountRef.current.addEventListener('mousedown', startRotation);
+    mountRef.current.addEventListener('mousemove', rotate);
+    mountRef.current.addEventListener('mouseup', stopRotation);
+    mountRef.current.addEventListener('mouseout', stopRotation);
+
     // Position camera
     camera.position.z = 8;
     camera.position.y = 1;
 
-    // Animation
+    // Animation  
     const animate = () => {
       requestAnimationFrame(animate);
-      
-      // Rotate the bridge slowly
-      bridge.rotation.y += 0.005;
-      
+      bridge.rotation.y += 0.05; // Add this line to maintain automatic rotation
       renderer.render(scene, camera);
     };
-
     animate();
 
     // Handle resize
     const handleResize = () => {
       if (!mountRef.current) return;
-      
       const width = mountRef.current.clientWidth;
       const height = mountRef.current.clientHeight;
-      
       renderer.setSize(width, height);
-      camera.aspect = width / height;
+      camera.aspect = width / height;  
       camera.updateProjectionMatrix();
     };
-
     window.addEventListener('resize', handleResize);
 
     // Cleanup
@@ -106,5 +147,6 @@ export const BridgeModel = () => {
 
   return <div ref={mountRef} className="w-80 h-80" />;
 };
+
 
 export default BridgeModel;

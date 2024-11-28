@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const toRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
 export const LaptopModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -10,19 +14,19 @@ export const LaptopModel = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
+
     renderer.setSize(320, 320);
     mountRef.current.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    
+
     const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
     keyLight.position.set(2, 4, 2);
     scene.add(keyLight);
 
     const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-    fillLight.position.set(-2, 2, 2);
+    fillLight.position.set(-2, 2, 2);  
     scene.add(fillLight);
 
     const createLaptop = () => {
@@ -30,10 +34,10 @@ export const LaptopModel = () => {
 
       // Base
       const baseGeometry = new THREE.BoxGeometry(3, 0.2, 2);
-      const baseMaterial = new THREE.MeshPhongMaterial({ 
+      const baseMaterial = new THREE.MeshPhongMaterial({
         color: 0x303030,
         shininess: 100,
-        specular: 0x666666
+        specular: 0x666666 
       });
       const base = new THREE.Mesh(baseGeometry, baseMaterial);
 
@@ -46,9 +50,9 @@ export const LaptopModel = () => {
       const keyboard = new THREE.Mesh(keyboardGeometry, keyboardMaterial);
       keyboard.position.y = 0.1;
 
-      // Touchpad
+      // Touchpad  
       const touchpadGeometry = new THREE.BoxGeometry(0.8, 0.02, 0.5);
-      const touchpadMaterial = new THREE.MeshPhongMaterial({ 
+      const touchpadMaterial = new THREE.MeshPhongMaterial({
         color: 0x2a2a2a,
         shininess: 50
       });
@@ -70,10 +74,10 @@ export const LaptopModel = () => {
 
       // Screen display
       const displayGeometry = new THREE.BoxGeometry(2.8, 1.8, 0.02);
-      const displayMaterial = new THREE.MeshPhongMaterial({ 
+      const displayMaterial = new THREE.MeshPhongMaterial({
         color: 0x000000,
         emissive: 0x114477,
-        emissiveIntensity: 0.2,
+        emissiveIntensity: 0.2,  
         shininess: 20
       });
       const display = new THREE.Mesh(displayGeometry, displayMaterial);
@@ -82,16 +86,16 @@ export const LaptopModel = () => {
 
       // Logo
       const logoGeometry = new THREE.CircleGeometry(0.15, 32);
-      const logoMaterial = new THREE.MeshPhongMaterial({ 
+      const logoMaterial = new THREE.MeshPhongMaterial({
         color: 0x666666,
-        shininess: 80
+        shininess: 80  
       });
       const logo = new THREE.Mesh(logoGeometry, logoMaterial);
       logo.position.z = 0.051;
       screenBase.add(logo);
 
       laptopGroup.add(base);
-      laptopGroup.add(keyboard);
+      laptopGroup.add(keyboard);  
       laptopGroup.add(touchpad);
       laptopGroup.add(screenBase);
 
@@ -102,16 +106,63 @@ export const LaptopModel = () => {
     laptop.rotation.x = 0.2;
     scene.add(laptop);
 
+    // Add event listeners for interaction
+    let isRotating = false;
+    let previousMousePosition = {
+      x: 0,  
+      y: 0
+    };
+
+    const startRotation = (event: MouseEvent) => {
+      isRotating = true; 
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    const stopRotation = () => {
+      isRotating = false;
+    };
+
+    const rotate = (event: MouseEvent) => {
+      if (!isRotating) return;
+
+      const deltaMove = {  
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y  
+      };
+
+      const deltaRotationQuaternion = new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(
+          toRadians(deltaMove.y * 0.5),
+          toRadians(deltaMove.x * 0.5),
+          0,
+          'XYZ' 
+        ));
+
+      laptop.quaternion.multiplyQuaternions(deltaRotationQuaternion, laptop.quaternion);
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    mountRef.current.addEventListener('mousedown', startRotation);
+    mountRef.current.addEventListener('mousemove', rotate);
+    mountRef.current.addEventListener('mouseup', stopRotation);
+    mountRef.current.addEventListener('mouseout', stopRotation);
+
     camera.position.z = 6;
     camera.position.y = 1;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      laptop.rotation.y += 0.005;
+      laptop.rotation.y += 0.02; // Add this line to maintain automatic rotation
       renderer.render(scene, camera);
     };
 
-    animate();
+    animate();  
 
     const handleResize = () => {
       if (!mountRef.current) return;
@@ -125,10 +176,10 @@ export const LaptopModel = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize); 
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
 
-  return <div ref={mountRef} className="w-80 h-80" />;
+  return <div ref={mountRef} className="w-80 h-80" />;  
 };
