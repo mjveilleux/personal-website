@@ -11,4 +11,4 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+} as Config;
