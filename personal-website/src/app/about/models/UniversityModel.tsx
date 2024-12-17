@@ -1,23 +1,37 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+/**
+ * Helper function to convert degrees to radians for THREE.js rotations
+ * THREE.js uses radians internally, but degrees are more intuitive for
+ * architectural angles and rotations
+ */
 const toRadians = (degrees: number) => {
   return degrees * (Math.PI / 180);
 };
 
 export const UniversityModel = () => {
+  // Reference to the container div for our THREE.js canvas
   const mountRef = useRef<HTMLDivElement>(null);
+  
+  // Store our random rotation speed - persists during component lifetime
+  const rotationSpeedRef = useRef<number>(0.1);
 
   useEffect(() => {
+    // Early return if mount point doesn't exist
     if (!mountRef.current) return;
 
+    // Store mount element reference for cleanup
+    const mountElement = mountRef.current;
+
+    // Set up THREE.js scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
     renderer.setSize(320, 320);
-    mountRef.current.appendChild(renderer.domElement);
+    mountElement.appendChild(renderer.domElement);
 
+    // Set up lighting to enhance architectural details
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
     
@@ -25,29 +39,39 @@ export const UniversityModel = () => {
     directionalLight.position.set(5, 10, 5);
     scene.add(directionalLight);
 
+    /**
+     * Creates a detailed Gothic-style university building
+     * The architecture includes:
+     * 1. Main building body with brick texture
+     * 2. Central tower with twin spires
+     * 3. Gothic-arched windows with glowing effect
+     * 4. Decorated crenellations along the roofline
+     * 5. Grand entrance arch
+     */
     const createUniversity = () => {
       const building = new THREE.Group();
 
-      // Main building body
+      // Create main building body with authentic brick coloring
       const mainGeometry = new THREE.BoxGeometry(4, 3, 2);
       const brickMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0xc4622d, // Brick red
-        shininess: 10
+        color: 0xc4622d, // Warm brick red color
+        shininess: 10 // Low shininess for matte brick appearance
       });
       const main = new THREE.Mesh(mainGeometry, brickMaterial);
 
-      // Central tower
+      // Add central tower with Gothic proportions
       const towerGeometry = new THREE.BoxGeometry(1.2, 4, 1);
       const tower = new THREE.Mesh(towerGeometry, brickMaterial);
       tower.position.y = 0.5;
 
-      // Tower spires
+      // Create decorative spires for Gothic character
       const spireGeometry = new THREE.ConeGeometry(0.3, 1, 4);
       const spireMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0x666666,
-        shininess: 50
+        color: 0x666666, // Weathered stone color
+        shininess: 50 // Higher shininess for stone-like appearance
       });
 
+      // Position twin spires symmetrically
       const spire1 = new THREE.Mesh(spireGeometry, spireMaterial);
       spire1.position.set(-0.3, 2.5, 0);
       tower.add(spire1);
@@ -56,22 +80,23 @@ export const UniversityModel = () => {
       spire2.position.set(0.3, 2.5, 0);
       tower.add(spire2);
 
-      // Windows
+      // Create glowing Gothic windows
       const windowMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0xaaaaff,
+        color: 0xaaaaff, // Blue-tinted glass
         shininess: 100,
-        emissive: 0x223366,
+        emissive: 0x223366, // Subtle interior glow
         emissiveIntensity: 0.2
       });
 
-      // Create Gothic windows
+      // Add series of Gothic windows with arches
       for (let i = -1.5; i <= 1.5; i += 0.75) {
+        // Window base
         const windowGeometry = new THREE.BoxGeometry(0.3, 1, 0.1);
         const window = new THREE.Mesh(windowGeometry, windowMaterial);
         window.position.set(i, 0, 1.1);
         main.add(window);
 
-        // Add Gothic arch
+        // Gothic pointed arch
         const archGeometry = new THREE.ConeGeometry(0.15, 0.3, 32, 1, true);
         const arch = new THREE.Mesh(archGeometry, windowMaterial);
         arch.rotation.x = Math.PI;
@@ -79,12 +104,12 @@ export const UniversityModel = () => {
         main.add(arch);
       }
 
-      // Entrance arch
+      // Add grand entrance
       const entranceGeometry = new THREE.BoxGeometry(0.8, 1.5, 0.5);
       const entrance = new THREE.Mesh(entranceGeometry, brickMaterial);
       entrance.position.set(0, -0.75, 1);
 
-      // Decorative elements
+      // Add decorative crenellations along roofline
       const crenellationGeometry = new THREE.BoxGeometry(0.2, 0.3, 0.2);
       for (let i = -2; i <= 2; i += 0.4) {
         const crenellation = new THREE.Mesh(crenellationGeometry, brickMaterial);
@@ -92,6 +117,7 @@ export const UniversityModel = () => {
         main.add(crenellation);
       }
 
+      // Combine all architectural elements
       building.add(main);
       building.add(tower);
       building.add(entrance);
@@ -99,15 +125,22 @@ export const UniversityModel = () => {
       return building;
     };
 
+    // Create and add university to scene
     const university = createUniversity();
     scene.add(university);
 
+    // State for handling mouse interactions
     let isRotating = false;
     let previousMousePosition = {
       x: 0,
       y: 0
     };
 
+    /**
+     * Mouse event handlers for interactive rotation
+     * These allow viewers to examine architectural details
+     * from different angles
+     */
     const startRotation = (event: MouseEvent) => {
       isRotating = true;
       previousMousePosition = {
@@ -117,7 +150,7 @@ export const UniversityModel = () => {
     };
 
     const stopRotation = () => {
-      isRotating = false;
+      isRotating = true;
     };
 
     const rotate = (event: MouseEvent) => {
@@ -128,41 +161,56 @@ export const UniversityModel = () => {
         y: event.clientY - previousMousePosition.y
       };
 
+      // Calculate rotation based on mouse movement
       const deltaRotationQuaternion = new THREE.Quaternion()
         .setFromEuler(new THREE.Euler(
           toRadians(deltaMove.y * 0.5),
-          toRadians(deltaMove.x * 0.5), 
+          toRadians(deltaMove.x * 0.5),
           0,
           'XYZ'
         ));
 
       university.quaternion.multiplyQuaternions(deltaRotationQuaternion, university.quaternion);
+      
       previousMousePosition = {
-        x: event.clientX, 
+        x: event.clientX,
         y: event.clientY
       };
     };
 
-    mountRef.current.addEventListener('mousedown', startRotation);
-    mountRef.current.addEventListener('mousemove', rotate);
-    mountRef.current.addEventListener('mouseup', stopRotation);
-    mountRef.current.addEventListener('mouseout', stopRotation);
+    // Add mouse event listeners
+    mountElement.addEventListener('mousedown', startRotation);
+    mountElement.addEventListener('mousemove', rotate);
+    mountElement.addEventListener('mouseup', stopRotation);
+    mountElement.addEventListener('mouseout', stopRotation);
 
+    // Position camera to showcase architectural features
     camera.position.z = 8;
     camera.position.y = 1;
 
+    /**
+     * Animation loop with consistent rotation speed
+     * The negative rotation creates a clockwise movement,
+     * which feels more natural for architectural visualization
+     */
     const animate = () => {
       requestAnimationFrame(animate);
-      university.rotation.y -= 0.05; // Add this line to maintain automatic rotation
+      university.rotation.y -= rotationSpeedRef.current;
       renderer.render(scene, camera);
     };
 
     animate();
 
+    /**
+     * Handle window resize events
+     * Ensures the building maintains proper proportions
+     */
     const handleResize = () => {
       if (!mountRef.current) return;
+      
       const width = mountRef.current.clientWidth;
       const height = mountRef.current.clientHeight;
+      
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -170,11 +218,38 @@ export const UniversityModel = () => {
 
     window.addEventListener('resize', handleResize);
 
+    // Cleanup function
     return () => {
+      // Ensure mount element exists before cleanup
+      if (mountElement) {
+        // Remove event listeners
+        mountElement.removeEventListener('mousedown', startRotation);
+        mountElement.removeEventListener('mousemove', rotate);
+        mountElement.removeEventListener('mouseup', stopRotation);
+        mountElement.removeEventListener('mouseout', stopRotation);
+      }
+
+      // Remove window resize listener
       window.removeEventListener('resize', handleResize);
-      mountRef.current?.removeChild(renderer.domElement);
+
+      // Dispose of THREE.js resources
+      scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+          if (object.material instanceof THREE.Material) {
+            object.material.dispose();
+          }
+        }
+      });
+      
+      renderer.dispose();
+
+      // Safely remove renderer element
+      if (mountElement && renderer.domElement.parentElement) {
+        mountElement.removeChild(renderer.domElement);
+      }
     };
-  }, []);
+  }, []); // Empty dependency array since we don't need to re-run the effect
 
   return <div ref={mountRef} className="w-80 h-80" />;
 };
