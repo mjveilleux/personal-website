@@ -15,55 +15,63 @@ interface Section {
 
 const sections: Section[] = [
   {
-    title: "The Data Journey",
+    title: "Trail-blazing Full-Stack Economics",
     content: (
       <>
         <p className="mb-4">
-          I'm Mason Veilleux, a Data Analyst at Game Data Pros where I design experiments 
-          and engineer data pipelines. I consider myself a "full-stack economist" - someone who 
-          can build front-end applications, analytics pipelines, and analyze data using economic 
-          theory and empirics.
+          I'm Mason Veilleux. I consider myself a "full-stack economist" - someone who 
+          can build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
+          theory and statistics.
         </p>
-        <p>
-          My toolkit includes R, Python, and a deep understanding of experimental design that helps
-          me bridge the gap between economic theory and practical applications.
+        <p className="mb-4">
+          My toolkit includes a deep understanding of experimental design and data-intensive application architecture that helps
+          combine rigourous analytics with software that scales. 
         </p>
+        <p className="mb-4">
+        I am proficient in developing React Apps using Typescript, Python, SQL (Redshift, SQL Server, Postgres), R, and Stan. 
+        I take pride in helping my team by contributing to several aspects of a data project.
+        </p>
+        
       </>
     ),
    component: <LaptopModel />
   },
   {
-    title: "Academic Foundations",
+    title: "From the Ivory Tower to the Wild",
     content: (
       <p>
         At the University of Kent, I earned my MSc in Econometrics, diving deep into firm dynamics 
         as a Research Assistant. My dissertation on local exposure to heterogeneous technologies 
         and long-run growth in the US won best in class, marking my commitment to understanding 
-        how technology shapes economic growth.
+        how technology shapes economic growth. 
       </p>
     ),
     component: <UniversityModel />
   },
   {
-    title: "Recent Projects",
+    title: "What Have I Been up to Recently?",
     content: (
       <div className="space-y-4">
         <p className="text-lg">Some highlights from my recent work:</p>
         <ul className="space-y-2">
-          <li>• Developed a multi-collinearity analysis tool for econometric research</li>
-          <li>• Created a hospital readmissions prediction model (1st place in DataCamp competition)</li>
-          <li>• Built a RShiny dashboard for P2P-based businesses</li>
+          {/* 
+          <li>• Correlated Arms in MABs using Upper Confidence Bound sampling</li>
+          <li>• Quantifying Uncertainty in NFL Power Rankings</li> 
+          */}
+          <li>• Developing a Quote Automation and Bid Optimization platform for construction companies (ask me about it!)</li>
+          <li>• Named DataCamp's 2023 "Top Statistical Surgeon" (best submission in 2023)</li>
+          <li>• Best Dissertation in the School of Economics (2022)</li>
         </ul>
       </div>
     ),
     component: <ProjectModel />
   },
   {
-    title: "Teaching & Writing",
+    title: "'Metrics on my Mind",
     content: (
       <p>
         I'm passionate about making economics accessible. My guide "Getting Started With Economics" 
-        helps undergraduates navigate the field. Through my blog, I break down complex econometric 
+        helps introduec undergraduates to the field. Through my blog, I break down complex econometric 
         concepts and share insights from my research and practical applications.
       </p>
     ),
@@ -73,7 +81,7 @@ const sections: Section[] = [
     title: "Life in the Bay",
     content: (
       <p>
-        Currently based in the San Francisco Bay Area with my wife and baby boy, I continue to 
+        Currently based in the Bay Area with my wife and baby boy, I continue to 
         explore the intersection of economics, data science, and technology. When not coding or 
         analyzing data, you might find me writing about economics or working on my next project.
       </p>
