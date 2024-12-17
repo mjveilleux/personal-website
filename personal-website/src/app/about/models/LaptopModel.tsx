@@ -8,23 +8,12 @@ const toRadians = (degrees: number) => {
   return degrees * (Math.PI / 180);
 };
 
-// Define possible values for random rotation speed
-type RandomRange =  0.0075 | 0.015 | 0.03;
-/**
- * Generates a random decimal in 0.1 increments between 0 and 1
- * Uses type assertion since we know our math will only produce valid values
- */
-const getRandomDecimal = (): RandomRange => {
-  const random = Math.round(Math.random() * 10) / 10;
-  return random as RandomRange;
-};
-
 export const LaptopModel = () => {
   // Reference to the container div for our THREE.js canvas
   const mountRef = useRef<HTMLDivElement>(null);
   
   // Store our random rotation speed - persists during component lifetime
-  const rotationSpeedRef = useRef<number>(getRandomDecimal());
+  const rotationSpeedRef = useRef<number>(0.1);
 
   useEffect(() => {
     // Early return if mount point doesn't exist
@@ -153,7 +142,7 @@ export const LaptopModel = () => {
     };
 
     const stopRotation = () => {
-      isRotating = false;
+      isRotating = true;
     };
 
     const rotate = (event: MouseEvent) => {

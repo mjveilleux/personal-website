@@ -10,30 +10,12 @@ const toRadians = (degrees: number) => {
   return degrees * (Math.PI / 180);
 };
 
-/**
- * Define possible values for random rotation speed
- * Using a union type ensures type safety while allowing for
- * varied but controlled animation speeds
- */
- type RandomRange =  0.0075 | 0.015 | 0.03;
-
-/**
- * Generates a random decimal in 0.1 increments between 0 and 1
- * This creates a consistent but random rotation speed that
- * persists until page refresh, giving each viewing session
- * its own unique character
- */
-const getRandomDecimal = (): RandomRange => {
-  const random = Math.round(Math.random() * 10) / 10;
-  return random as RandomRange;
-};
-
 export const UniversityModel = () => {
   // Reference to the container div for our THREE.js canvas
   const mountRef = useRef<HTMLDivElement>(null);
   
   // Store our random rotation speed - persists during component lifetime
-  const rotationSpeedRef = useRef<number>(getRandomDecimal());
+  const rotationSpeedRef = useRef<number>(0.1);
 
   useEffect(() => {
     // Early return if mount point doesn't exist
@@ -168,7 +150,7 @@ export const UniversityModel = () => {
     };
 
     const stopRotation = () => {
-      isRotating = false;
+      isRotating = true;
     };
 
     const rotate = (event: MouseEvent) => {

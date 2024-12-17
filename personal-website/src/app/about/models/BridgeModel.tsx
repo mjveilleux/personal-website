@@ -10,28 +10,12 @@ const toRadians = (degrees: number) => {
   return degrees * (Math.PI / 180);
 };
 
-/**
- * Defines the possible values for random rotation speed using a union type.
- * This ensures type safety while providing enough variety for smooth animation.
- */
- type RandomRange =  0.0075 | 0.015 | 0.03;
-
-/**
- * Generates a random decimal for consistent rotation speed.
- * The speed remains constant during the session, changing only on page refresh,
- * which helps viewers focus on the structural details of the bridge.
- */
-const getRandomDecimal = (): RandomRange => {
-  const random = Math.round(Math.random() * 10) / 10;
-  return random as RandomRange;
-};
-
 export const BridgeModel = () => {
   // Reference to the container div for our THREE.js canvas
   const mountRef = useRef<HTMLDivElement>(null);
   
   // Store our random rotation speed - persists during component lifetime
-  const rotationSpeedRef = useRef<number>(getRandomDecimal());
+  const rotationSpeedRef = useRef<number>(0.1);
 
   useEffect(() => {
     // Early return if mount point doesn't exist
@@ -147,7 +131,7 @@ export const BridgeModel = () => {
     };
 
     const stopRotation = () => {
-      isRotating = false;
+      isRotating = true;
     };
 
     const rotate = (event: MouseEvent) => {
