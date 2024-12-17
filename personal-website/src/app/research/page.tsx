@@ -14,7 +14,7 @@ const papers: Paper[] = [
     title: "Innovative Knowledge, Firm Creation, and Local Growth",
     status: "MSc Dissertation",
     year: "2022",
-    description: "US Cities from 1979-2010 exposed to innovative knowledge flows experience higher long-run firm entry. Causal identification is driven by knowledge in computer-related technologies."
+    description: "US Cities from 1979-2010 exposed to innovative knowledge flows experience higher long-run firm entry. Heterogenous analysis finds that, through the firm entry channel, knowledge in computer-related technologies had the largest affect on local growth."
   },
   {
     title: "Seasonality of Female Marriage in Bangladesh",

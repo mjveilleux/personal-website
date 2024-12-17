@@ -21,43 +21,47 @@ export default function Home() {
           transition={{ duration: 0.8 }}
         >
           <motion.h1 
-            className="text-4xl font-light leading-relaxed"
+            className="text-lg leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             My name is{' '}
-            <span className="font-medium text-blue-600">Mason Veilleux</span>{' '}
+            <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
+              Mason Veilleux
+            </span>{' '}
             and I am a Data Analyst at{' '}
             <Link 
               href="https://gamedatapros.com" 
-              className="relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100"
+              className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100"
             >
               Game Data Pros
-            </Link>
+            </Link> where I design experiments and engineer data pipelines to analyze experiments.
           </motion.h1>
 
           <motion.div 
-            className="space-y-6 text-lg text-stone-700 leading-relaxed"
+            className="space-y-6 text-lg leading-relaxed"
           >
             {[
-              `I help design experiments and engineer data pipelines to analyze experiments. 
-               I consider myself a "full-stack economist" who can build front-end applications, 
-               analytics pipelines, and analyze data using my expertise in economic theory and empirics.`,
               <>
-                I earned my MSc in Econometrics at the{' '}
-                <Link href="https://kent.ac.uk" className="text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline">
-                  University of Kent
-                </Link>{' '}
-                where I worked as a Research Assistant studying firm dynamics. I wrote my dissertation on 
-                local exposure to heterogeneous technologies on long-run growth in the US winning best 
-                dissertation in my class.
+                I consider myself a {" "}
+                <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
+                  full-stack economist
+                </span>{" "}
+                who can build front-end applications, analytics pipelines, and analyze data using my expertise in economic theory and statistics.
+              </>,
+              <>
+                I earned my MSc in Econometrics where I researched
+                <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
+                macroeconomics and industrial organization
+                </span>{","} particularly focusing on how firm-level characteristics and strategic behaviour shape macroeconomic outcomes.
+      
               </>,
               "I currently live in the San Francisco Bay Area with my wife and baby boy.",
               <>
                 I sometimes write{' '}
-                <Link href="/blogs" className="text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline">blogs</Link>
+                <Link href="/blogs" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">blogs</Link>
                 {' '}and share my{' '}
-                <Link href="/research" className="text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline">research</Link>
+                <Link href="/research" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">research</Link>
                 {' '}on here.
               </>
             ].map((content, i) => (
