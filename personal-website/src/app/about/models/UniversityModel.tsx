@@ -15,7 +15,7 @@ const toRadians = (degrees: number) => {
  * Using a union type ensures type safety while allowing for
  * varied but controlled animation speeds
  */
- type RandomRange = 0.0075 | 0.0075 | 0.0075 | 0.1 | 0.15 | 0.2;
+ type RandomRange =  0.0075 | 0.015 | 0.03;
 
 /**
  * Generates a random decimal in 0.1 increments between 0 and 1

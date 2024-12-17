@@ -14,7 +14,7 @@ const toRadians = (degrees: number) => {
  * Defines the possible values for random rotation speed using a union type.
  * This ensures type safety while providing enough variety for smooth animation.
  */
-type RandomRange = 0.0075 | 0.0075 | 0.0075 | 0.1 | 0.15 | 0.2;
+ type RandomRange =  0.0075 | 0.015 | 0.03;
 
 /**
  * Generates a random decimal for consistent rotation speed.

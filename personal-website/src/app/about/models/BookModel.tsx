@@ -9,8 +9,7 @@ const toRadians = (degrees: number) => {
 };
 
 // Define possible values for random rotation speed
-type RandomRange = 0.0075 | 0.0075 | 0.0075 | 0.1 | 0.15 | 0.2;
-
+type RandomRange =  0.0075 | 0.015 | 0.03;
 /**
  * Generates a random decimal in 0.1 increments between 0 and 1
  * Uses type assertion since we know our math will only produce valid values
