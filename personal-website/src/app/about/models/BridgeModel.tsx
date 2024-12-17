@@ -15,7 +15,7 @@ export const BridgeModel = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   
   // Store our random rotation speed - persists during component lifetime
-  const rotationSpeedRef = useRef<number>(0.1);
+  const rotationSpeedRef = useRef<number>(-0.1);
 
   useEffect(() => {
     // Early return if mount point doesn't exist
