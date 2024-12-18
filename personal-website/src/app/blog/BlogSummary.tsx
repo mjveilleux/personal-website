@@ -21,7 +21,7 @@ export interface BlogPost {
     },
     {
       title: "Predicting Hospital Readmissions",
-      description: "I placed 1st in a DataCamp competition, this is my submission.",
+      description: "My DataCamp competition submission",
       link: "#",
       type: "blog",
       tags: ["r", "shiny", "healthcare", "machine-learning"],
@@ -30,7 +30,7 @@ export interface BlogPost {
     },
     {
       title: "Using RSelenium with Docker",
-      description: "A web-scraper in Docker just because Docker is beautiful.",
+      description: "A web-scraper in Docker because Docker is beautiful.",
       link: "https://github.com/yourusername/rselenium-docker",
       type: "project",
       tags: ["docker", "r", "web-scraping"],
@@ -41,7 +41,7 @@ export interface BlogPost {
     {
       title: "Getting Started With Economics: A Guide for the Econ Curious",
       description: "I want to tell everyone about how amazing the field of economics and econometrics is. This is a little guide I made for someone starting an undergraduate degree and are curious about majoring in Economics.",
-      link: "mailto:your@email.com",
+      link: "mailto:masonjveilleux@gmail.com",
       type: "project",
       tags: ["economics", "education", "guide"],
       featured: 'false',
