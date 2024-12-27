@@ -17,7 +17,7 @@ export interface BlogPost {
       type: "blog",
       tags: ["econometrics", "statistics", "linear-regression"],
       featured: 'true',
-      image: "/econ_icon2.png"
+      image: "/favicon.ico"
     },
     {
       title: "Predicting Hospital Readmissions",
@@ -26,7 +26,7 @@ export interface BlogPost {
       type: "blog",
       tags: ["r", "shiny", "healthcare", "machine-learning"],
       featured: 'true',
-      image: "/econ_icon2.png"
+      image: "/favicon.ico"
     },
     {
       title: "Using RSelenium with Docker",
@@ -35,7 +35,7 @@ export interface BlogPost {
       type: "project",
       tags: ["docker", "r", "web-scraping"],
       featured: 'true',
-      image: "/econ_icon2.png",
+      image: "/favicon.ico",
       linkType: "github"
     },
     {
@@ -45,7 +45,7 @@ export interface BlogPost {
       type: "project",
       tags: ["economics", "education", "guide"],
       featured: 'false',
-      image: "/econ_icon2.png",
+      image: "/favicon.ico",
       linkType: "email"
     }
   ];
