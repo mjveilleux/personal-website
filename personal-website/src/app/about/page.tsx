@@ -19,7 +19,7 @@ const sections: Section[] = [
     content: (
       <>
         <p className="mb-4">
-          I'm Mason Veilleux. I consider myself a "full-stack economist" - someone who has the toolset to
+          A "Full-Stack Economist" is someone who has the toolset to
           build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
           theory and statistics.
         </p>
