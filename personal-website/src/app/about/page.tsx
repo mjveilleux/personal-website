@@ -15,7 +15,7 @@ interface Section {
 
 const sections: Section[] = [
   {
-    title: "Balzing a Trail for Full-Stack Economics",
+    title: "Blazing a Trail for Full-Stack Economics",
     content: (
       <>
         <p className="mb-4">
