@@ -15,17 +15,17 @@ interface Section {
 
 const sections: Section[] = [
   {
-    title: "Trail-blazing Full-Stack Economics",
+    title: "Balzing a Trail for Full-Stack Economics",
     content: (
       <>
         <p className="mb-4">
-          I'm Mason Veilleux. I consider myself a "full-stack economist" - someone who 
-          can build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
+          I'm Mason Veilleux. I consider myself a "full-stack economist" - someone who has the toolset to
+          build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
           theory and statistics.
         </p>
         <p className="mb-4">
-          My toolkit includes a deep understanding of experimental design and data-intensive application architecture that helps
-          combine rigourous analytics with software that scales. 
+          My full-stack economics toolkit includes a deep understanding of experimental design and data-intensive application architecture that helps
+          combine rigourous analytics to build software that scales and quality products. 
         </p>
         <p className="mb-4">
         I am proficient in developing React Apps using Typescript, Python, SQL (Redshift, SQL Server, Postgres), R, and Stan. 
@@ -71,19 +71,20 @@ const sections: Section[] = [
     content: (
       <p>
         I'm passionate about making economics accessible. My guide "Getting Started With Economics" 
-        helps introduec undergraduates to the field. Through my blog, I break down complex econometric 
+        helps introduce undergraduates to the field. I also maintain a blog where I break down econometric 
         concepts and share insights from my research and practical applications.
       </p>
     ),
     component: <BookModel />
   },
   {
-    title: "Life in the Bay",
+    title: "Life in California",
     content: (
       <p>
-        Currently based in the Bay Area with my wife and baby boy, I continue to 
-        explore the intersection of economics, data science, and technology. When not coding or 
-        analyzing data, you might find me writing about economics or working on my next project.
+        I'm currently based in the Bay Area with my family, I continue to 
+        explore the intersection of economics and technology. When not coding or 
+        analyzing data, you might find me cooking, walking, or enjoying both with the company of 
+        my friends and family.
       </p>
     ),
     component: <BridgeModel />
