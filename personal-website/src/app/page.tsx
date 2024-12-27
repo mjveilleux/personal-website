@@ -88,6 +88,7 @@ export default function Home() {
               src="/github_profile_pic.png"
               alt="Mason Veilleux"
               fill
+              sizes='20x10'
               priority
               className="object-cover rounded-lg hover:shadow-xl transition-shadow duration-300"
             />
