@@ -3,69 +3,19 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Search, Mail, Github } from 'lucide-react'
+import { BlogPosts } from './BlogSummary'
+import FeaturedPosts from './FeaturedPosts';
 
-interface BlogPost {
-  title: string
-  description: string
-  link: string
-  type: 'blog' | 'project'
-  tags: string[]
-  image: string
-  linkType?: 'email' | 'github' | 'external'
-}
-
-const posts: BlogPost[] = [
-  {
-    title: "Multi-Collinearity is Weird",
-    description: "I write about how increasing the correlation between two explantory variables skews your linear in the most unexpected ways.",
-    link: "#",
-    type: "blog",
-    tags: ["econometrics", "statistics", "linear-regression"],
-    image: "/blog/multicollinearity.jpg"
-  },
-  {
-    title: "Predicting Hospital Readmissions",
-    description: "I placed 1st in a DataCamp competition, this is my submission.",
-    link: "#",
-    type: "blog",
-    tags: ["r", "shiny", "healthcare", "machine-learning"],
-    image: "/blog/hospital.jpg"
-  },
-  {
-    title: "RShiny App for Cash Businesses using P2P apps",
-    description: "Made a Shiny App for P2P-based businesses to dashboard their revenue and customer info",
-    link: "mailto:your@email.com",
-    type: "project",
-    tags: ["r", "shiny", "business", "dashboard"],
-    image: "/blog/shiny.jpg",
-    linkType: "email"
-  },
-  {
-    title: "Using RSelenium with Docker",
-    description: "A web-scraper in Docker just because Docker is beautiful.",
-    link: "https://github.com/yourusername/rselenium-docker",
-    type: "project",
-    tags: ["docker", "r", "web-scraping"],
-    image: "/blog/docker.jpg",
-    linkType: "github"
-  },
-  {
-    title: "Getting Started With Economics: A Guide for the Econ Curious",
-    description: "I want to tell everyone about how amazing the field of economics and econometrics is. This is a little guide I made for someone starting an undergraduate degree and are curious about majoring in Economics.",
-    link: "mailto:your@email.com",
-    type: "project",
-    tags: ["economics", "education", "guide"],
-    image: "/blog/economics.jpg",
-    linkType: "email"
-  }
-]
+const featuredPosts = BlogPosts
+  .filter(post => post.featured.includes('true'))
+  .slice(0, 5);
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
-  const allTags = Array.from(new Set(posts.flatMap(post => post.tags)))
+  const allTags = Array.from(new Set(BlogPosts.flatMap(post => post.tags)))
   
-  const filteredPosts = posts.filter(post => {
+  const filteredPosts = BlogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesTag = !selectedTag || post.tags.includes(selectedTag)
@@ -90,18 +40,25 @@ export default function Blog() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-4xl font-light">'Metrics Blog</h1>
+        <h1 className="text-4xl font-light"> (Under Construction!) 'Metrics Blog</h1>
         <p className="text-lg text-stone-700">
-          I like to write about econometrics. Here are some posts I have written:
+          I like to write about econometrics. I am currently converting my blogs to work within this NextJS web app. 
+          Here I would put some call to sign up for blog notifications but I don't want to do build out that feature right now... 
         </p>
       </motion.div>
 
-      <motion.div 
-        className="flex gap-4 items-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <div className="relative flex-1">
+        {/* Uncomment below to show featured posts */}
+      {/* <FeaturedPosts posts={featuredPosts} /> */}
+
+      <div className="space-y-4">
+
+        {/* Uncomment below to reveal search feature */}
+
+        {/* <motion.div 
+          className="relative"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
             type="text"
@@ -110,8 +67,13 @@ export default function Blog() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-        <div className="flex gap-2 flex-wrap">
+        </motion.div> */}
+
+        <motion.div 
+          className="flex gap-2 flex-wrap"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           {allTags.map(tag => (
             <button
               key={tag}
@@ -125,8 +87,8 @@ export default function Blog() {
               {tag}
             </button>
           ))}
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
       <div className="space-y-6">
         {filteredPosts.map((post, index) => (
@@ -140,7 +102,7 @@ export default function Blog() {
               href={post.link}
               className="group flex gap-6 p-4 rounded-lg bg-white hover:shadow-lg transition-shadow border border-stone-100 block"
             >
-              <div className="relative w-48 h-32 flex-shrink-0">
+              <div className="relative w-32 h-24 flex-shrink-200">
                 <Image
                   src={post.image}
                   alt={post.title}

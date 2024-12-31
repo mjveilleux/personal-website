@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=1.2]
+% Define some nice colors
+\definecolor{royalblue}{RGB}{65,105,225}
+\definecolor{indigo}{RGB}{75,0,130}
+\definecolor{forestgreen}{RGB}{34,139,34}
+% Axes
+\draw[line width=2.5mm, <-] (0,10.4) node [above] {\large $Bags$} --(0,0) node [left] {$O$};
+\draw[line width=2.5mm, ->] (0,0) --(9,0);
+\node [below] at (8.6, -0.6) {\large $Chillin'$};
+% Budget constraints (only B remaining)
+\draw[line width=2mm, royalblue] (0,5.9)--(8.6,0);
+% Single indifference curve (IC2)
+\draw[line width=2mm, indigo] (2.2,8.5) node [right] {} ..controls (3.8,3.2) and (5.2,1.8) ..(6.8,1.7);
+\end{tikzpicture}
+\end{document}

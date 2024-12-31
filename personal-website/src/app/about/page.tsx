@@ -15,67 +15,71 @@ interface Section {
 
 const sections: Section[] = [
   {
-    title: "The Data Journey",
+    title: "There are dozens of other Full-Stack Economists, dozens!",
     content: (
       <>
         <p className="mb-4">
-          I'm Mason Veilleux, a Data Analyst at Game Data Pros where I design experiments 
-          and engineer data pipelines. I consider myself a "full-stack economist" - someone who 
-          can build front-end applications, analytics pipelines, and analyze data using economic 
-          theory and empirics.
+          A "Full-Stack Economist" is someone who has the toolset to
+          build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
+          theory, statistics, and software architecture.
         </p>
-        <p>
-          My toolkit includes R, Python, and a deep understanding of experimental design that helps
-          me bridge the gap between economic theory and practical applications.
+        <p className="mb-4">
+          My full-stack economics toolkit includes a deep understanding of experimental design and data-intensive application architecture that helps
+          combine rigourous analytics to build quality products and software that scales. 
         </p>
+        <p className="mb-4">
+        I am proficient in developing React Apps using Typescript, Python, SQL (Redshift, SQL Server, Postgres), R, and Stan. 
+        I take pride in having the ability to contribute to all aspects of a data project.
+        </p>
+        
       </>
     ),
    component: <LaptopModel />
   },
   {
-    title: "Academic Foundations",
+    title: "From the Ivory Tower to the Wild",
     content: (
       <p>
         At the University of Kent, I earned my MSc in Econometrics, diving deep into firm dynamics 
         as a Research Assistant. My dissertation on local exposure to heterogeneous technologies 
         and long-run growth in the US won best in class, marking my commitment to understanding 
-        how technology shapes economic growth.
+        how technology shapes economic growth. 
       </p>
     ),
     component: <UniversityModel />
   },
   {
-    title: "Recent Projects",
+    title: "What Have I Been up to Recently?",
     content: (
       <div className="space-y-4">
-        <p className="text-lg">Some highlights from my recent work:</p>
+        <p className="text-lg">What I'm doing outside my 9-5:</p>
         <ul className="space-y-2">
-          <li>• Developed a multi-collinearity analysis tool for econometric research</li>
-          <li>• Created a hospital readmissions prediction model (1st place in DataCamp competition)</li>
-          <li>• Built a RShiny dashboard for P2P-based businesses</li>
+          <li>• Mostly re-writing my website in NextJS from the boring Google version</li>
+          <li>• Full time daddy duty</li>
+          <li>• Ideas of a plan for a series of blogs to be published throughout 2025</li>
         </ul>
       </div>
     ),
     component: <ProjectModel />
   },
   {
-    title: "Teaching & Writing",
+    title: "'Metrics on my Mind",
     content: (
       <p>
-        I'm passionate about making economics accessible. My guide "Getting Started With Economics" 
-        helps undergraduates navigate the field. Through my blog, I break down complex econometric 
-        concepts and share insights from my research and practical applications.
+        I love economics and statistics. I think econometrics provides useful tools to think about research design and quantifiying treatment effects.
+        I'm usually reading articles on these topics to keep up with the latest trends in the hopes to apply them to my day-to-day.
       </p>
     ),
     component: <BookModel />
   },
   {
-    title: "Life in the Bay",
+    title: "Life in California",
     content: (
       <p>
-        Currently based in the San Francisco Bay Area with my wife and baby boy, I continue to 
-        explore the intersection of economics, data science, and technology. When not coding or 
-        analyzing data, you might find me writing about economics or working on my next project.
+        I'm currently based in the Bay Area with my family, I continue to 
+        explore the intersection of economics and technology. When not coding or 
+        analyzing data, you might find me cooking, walking, or enjoying both with the company of 
+        my friends and family.
       </p>
     ),
     component: <BridgeModel />
