@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import '../styles/globals.css'
+import TopNav from '@/components/TopNav';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,19 +27,9 @@ export default function RootLayout({
             <Link href="/" className="text-xl font-medium hover:text-stone-600 transition-colors">
               Full Stack Economics
             </Link>
-            <div className="space-x-8">
-              {['About', 'Research', 'Blog'].map((item) => (
-                <Link
-                  key={item}
-                  href={`/${item.toLowerCase()}`}
-                  className="hover:text-stone-600 transition-colors"
-                >
-                  {item}
-                </Link>
-              ))}
-            </div>
+            <TopNav/>
           </div>
-        </nav>
+         </nav>
         <main className="max-w-5xl mx-auto px-6 pt-24 pb-12">
           {children}
         </main>

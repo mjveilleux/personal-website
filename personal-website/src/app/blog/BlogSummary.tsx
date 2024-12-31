@@ -9,9 +9,18 @@ export interface BlogPost {
     linkType?: 'email' | 'github' | 'external';
   }
   
-  // uncomment when you are ready to start publishing your blogs
 
   export const BlogPosts: BlogPost[] = [
+
+    {
+      title: "Getting Quarto Started in NextJS",
+      description: "How do you get your Quarto doc to work in NextJS, I found an answer!",
+      link: " /blog.html",
+      type: "blog",
+      tags: ["nextjs", "web dev", "quarto"],
+      featured: 'true',
+      image: "/favicon.ico"
+    },
     // {
     //   title: "Multi-Collinearity is Weird",
     //   description: "I write about how increasing the correlation between two explantory variables skews your linear in the most unexpected ways.",
