@@ -66,8 +66,8 @@ const sections: Section[] = [
     title: "'Metrics on my Mind",
     content: (
       <p>
-        I love economics and statistics. I have an MSc in Econometrics and previously worked on several research projects across domains.
-      I think econometrics provides useful tools to think about research design and quantifiying treatment effects.
+        I love economics and statistics. I think econometrics provides useful tools to think about research design and quantifiying treatment effects.
+        I'm usually reading articles on these topics to keep up with the latest trends in the hopes to apply them to my day-to-day.
       </p>
     ),
     component: <BookModel />

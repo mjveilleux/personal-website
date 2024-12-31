@@ -17,16 +17,16 @@ const papers: Paper[] = [
     description: "US Cities from 1979-2010 exposed to innovative knowledge flows experience higher long-run firm entry. Heterogenous analysis finds that, through the firm entry channel, knowledge in computer-related technologies had the largest affect on local growth."
   },
   {
-    title: "Seasonality of Female Marriage in Bangladesh",
-    status: "In progress",
-    year: "",
-    description: "After rice harvests, female marriage age decreases and marriage rates increase. I develop a marriage model with differentiated female marriage markets to explain these phenomena through the effect of seasonal income. Seasonal income within agricultural societies has a long-run effect on female human capital stocks."
+    title: "Transmission of Agricultural Income Shocks on Differentitated Marriage Market Decisions",
+    status: "",
+    year: "2022",
+    description: "After harvests, female marriage age decreases and marriage rates increase. I introduce a model that illustrates the transmission of agricultural income shocks on differentiated female marriage markets to explain these phenomena. Negative agricultural income shocks impact female human capital stocks across generations throuh marriage market decisions."
   },
   {
-    title: "Comparing Returns to Education: A Panel Data Methods Survey",
-    status: "In progress",
-    year: "",
-    description: "Using PSID data, I survey a variety of panel data estimators and compare these estimates from a Mincer model."
+    title: "Modeling Returns to Education: A Panel Data Methods Survey",
+    status: "",
+    year: "2021",
+    description: "Using PSID data, I survey a variety of panel data estimators and compare these estimates using the classic Mincer model."
   }
 ]
 
