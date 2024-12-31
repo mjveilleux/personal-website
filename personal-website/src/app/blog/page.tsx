@@ -40,16 +40,21 @@ export default function Blog() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-4xl font-light">'Metrics Blog</h1>
+        <h1 className="text-4xl font-light"> (Under Construction!) 'Metrics Blog</h1>
         <p className="text-lg text-stone-700">
-          I like to write about econometrics. Here are some posts I have written:
+          I like to write about econometrics. I am currently converting my blogs to work within this NextJS web app. 
+          Here I would put some call to sign up for blog notifications but I don't want to do build out that feature right now... 
         </p>
       </motion.div>
 
-      <FeaturedPosts posts={featuredPosts} />
+        {/* Uncomment below to show featured posts */}
+      {/* <FeaturedPosts posts={featuredPosts} /> */}
 
       <div className="space-y-4">
-        <motion.div 
+
+        {/* Uncomment below to reveal search feature */}
+
+        {/* <motion.div 
           className="relative"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -62,7 +67,7 @@ export default function Blog() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
-        </motion.div>
+        </motion.div> */}
 
         <motion.div 
           className="flex gap-2 flex-wrap"
