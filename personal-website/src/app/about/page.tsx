@@ -15,21 +15,21 @@ interface Section {
 
 const sections: Section[] = [
   {
-    title: "Blazing a Trail for Full-Stack Economics",
+    title: "There are dozens of other Full-Stack Economists, dozens!",
     content: (
       <>
         <p className="mb-4">
           A "Full-Stack Economist" is someone who has the toolset to
           build front-end applications, plumb analytics pipelines, and generate insights using a rigorous application of economic 
-          theory and statistics.
+          theory, statistics, and software architecture.
         </p>
         <p className="mb-4">
           My full-stack economics toolkit includes a deep understanding of experimental design and data-intensive application architecture that helps
-          combine rigourous analytics to build software that scales and quality products. 
+          combine rigourous analytics to build quality products and software that scales. 
         </p>
         <p className="mb-4">
         I am proficient in developing React Apps using Typescript, Python, SQL (Redshift, SQL Server, Postgres), R, and Stan. 
-        I take pride in helping my team by contributing to several aspects of a data project.
+        I take pride in having the ability to contribute to all aspects of a data project.
         </p>
         
       </>
@@ -52,15 +52,11 @@ const sections: Section[] = [
     title: "What Have I Been up to Recently?",
     content: (
       <div className="space-y-4">
-        <p className="text-lg">Some highlights from my recent work:</p>
+        <p className="text-lg">What I'm doing outside my 9-5:</p>
         <ul className="space-y-2">
-          {/* 
-          <li>• Correlated Arms in MABs using Upper Confidence Bound sampling</li>
-          <li>• Quantifying Uncertainty in NFL Power Rankings</li> 
-          */}
-          <li>• Developing a Quote Automation and Bid Optimization platform for construction companies (ask me about it!)</li>
-          <li>• Named DataCamp's 2023 "Top Statistical Surgeon" (best submission in 2023)</li>
-          <li>• Best Dissertation in the School of Economics (2022)</li>
+          <li>• Mostly re-writing my website in NextJS from the boring Google version</li>
+          <li>• Full time daddy duty</li>
+          <li>• Ideas of a plan for a series of blogs to be published throughout 2025</li>
         </ul>
       </div>
     ),
@@ -70,9 +66,8 @@ const sections: Section[] = [
     title: "'Metrics on my Mind",
     content: (
       <p>
-        I'm passionate about making economics accessible. My guide "Getting Started With Economics" 
-        helps introduce undergraduates to the field. I also maintain a blog where I break down econometric 
-        concepts and share insights from my research and practical applications.
+        I love economics and statistics. I have an MSc in Econometrics and previously worked on several research projects across domains.
+      I think econometrics provides useful tools to think about research design and quantifiying treatment effects.
       </p>
     ),
     component: <BookModel />
