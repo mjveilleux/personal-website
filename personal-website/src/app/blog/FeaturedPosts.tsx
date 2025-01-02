@@ -33,13 +33,13 @@ const FeaturedPosts = ({ posts }: { posts: BlogPost[] }) => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-blue-900">Featured Posts</h2>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => scroll('left')}
             className="p-2 rounded-full bg-white shadow hover:bg-gray-50 transition-colors border border-gray-200"
           >
             <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <button 
+          <button
             onClick={() => scroll('right')}
             className="p-2 rounded-full bg-white shadow hover:bg-gray-50 transition-colors border border-gray-200"
           >
@@ -47,8 +47,7 @@ const FeaturedPosts = ({ posts }: { posts: BlogPost[] }) => {
           </button>
         </div>
       </div>
-
-      <div 
+      <div
         ref={scrollContainerRef}
         className="flex gap-6 overflow-x-auto pb-4 hide-scrollbar"
       >
@@ -62,29 +61,31 @@ const FeaturedPosts = ({ posts }: { posts: BlogPost[] }) => {
           >
             <a
               href={post.link}
-              className="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+              className="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-96"
             >
-              <div className="relative w-full h-48">
+              <div className="relative h-48">
                 <Image
                   src={post.image}
                   alt={post.title}
                   fill
-                  className="object-cover rounded-t-xl"
+                  className="object-contain rounded-t-xl"
                 />
               </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold group-hover:text-blue-600 transition-colors">
-                    {post.title}
-                  </h3>
-                  {post.linkType && getLinkIcon(post.linkType)}
+              <div className="p-6 h-48 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-lg font-semibold group-hover:text-blue-600 transition-colors line-clamp-1">
+                      {post.title}
+                    </h3>
+                    {post.linkType && getLinkIcon(post.linkType)}
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {post.description}
+                  </p>
                 </div>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {post.description}
-                </p>
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map(tag => (
-                    <span 
+                    <span
                       key={tag}
                       className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
                     >

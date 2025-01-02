@@ -56,3 +56,23 @@ p
 ```
 
 this is my $s$ and this is my $\phi$
+
+## workflow of adding a quarto blog to NextJs app
+
+First, render the html using embed-resource: true in the YAML. Make sure to name the blog file a specific name that can be searched for like "2024-12-31-quarto-in-nextjs.qmd"
+
+Then, copy that html file into the public folder.
+
+Then, update the BlogSummary.tsx file. Make sure to add the description, the tags, the link to the public folder, and other information.
+
+This is all the data needed to process the file and make it it's own web-page.
+
+Then NextJS will do it's thing. The end product is a web-page with the similar TopNav. We will add a sidebar with links to all the other blogs, as well as my contact information at the bottom of the page. The aforementioned will be defined by the layout.tsx file.
+
+The page.tsx file will then use iframe to supply the html files in the public folder to their own web-page.
+
+So ingesting the iframe and making it typescript should give it it's own URL without the .html at the end.
+
+The iframe will cover the full page.
+
+Then we will have the TS

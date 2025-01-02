@@ -25,7 +25,7 @@ export default function RootLayout({
         <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-sm border-b border-stone-100 z-50">
           <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <Link href="/" className="text-xl font-medium hover:text-stone-600 transition-colors">
-              Full Stack Economics
+              Mason Veilleux
             </Link>
             <TopNav/>
           </div>

@@ -40,10 +40,9 @@ export default function Blog() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-4xl font-light"> (Under Construction!) 'Metrics Blog</h1>
+        <h1 className="text-4xl font-light"> Muh 'Blog</h1>
         <p className="text-lg text-stone-700">
-          I like to write about econometrics. I am currently converting my blogs to work within this NextJS web app. 
-          Here I would put some call to sign up for blog notifications but I don't want to do build out that feature right now... 
+          I write my musings here.
         </p>
       </motion.div>
 

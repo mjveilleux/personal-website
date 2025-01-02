@@ -15,37 +15,28 @@ export interface BlogPost {
     {
       title: "Getting Quarto Started in NextJS",
       description: "How do you get your Quarto doc to work in NextJS, I found an answer!",
-      link: " /blog.html",
+      link: "/blog/blog",
       type: "blog",
       tags: ["nextjs", "web dev", "quarto"],
       featured: 'true',
       image: "/favicon.ico"
     },
-    // {
-    //   title: "Multi-Collinearity is Weird",
-    //   description: "I write about how increasing the correlation between two explantory variables skews your linear in the most unexpected ways.",
-    //   link: "#",
-    //   type: "blog",
-    //   tags: ["econometrics", "statistics", "linear-regression"],
-    //   featured: 'true',
-    //   image: "/favicon.ico"
-    // },
-    // {
-    //   title: "Predicting Hospital Readmissions",
-    //   description: "My DataCamp competition submission",
-    //   link: "#",
-    //   type: "blog",
-    //   tags: ["r", "shiny", "healthcare", "machine-learning"],
-    //   featured: 'true',
-    //   image: "/favicon.ico"
-    // },
+    {
+      title: "Predicting Hospital Readmissions",
+      description: "My DataCamp competition submission",
+      link: "https://www.datacamp.com/competitions/how-can-hospitals-reduce-readmissions",
+      type: "blog",
+      tags: ["r", "shiny", "healthcare", "statistics"],
+      featured: 'true',
+      image: "/datacamp-comp.png"
+    },
     // {
     //   title: "Using RSelenium with Docker",
     //   description: "A web-scraper in Docker because Docker is beautiful.",
-    //   link: "https://github.com/yourusername/rselenium-docker",
+    //   link: "https://github.com/mjveilleux/rselenium_with_docker",
     //   type: "project",
     //   tags: ["docker", "r", "web-scraping"],
-    //   featured: 'true',
+    //   featured: 'false',
     //   image: "/favicon.ico",
     //   linkType: "github"
     // },
