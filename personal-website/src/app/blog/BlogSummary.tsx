@@ -23,7 +23,7 @@ export interface BlogPost {
     },
     {
       title: "Predicting Hospital Readmissions",
-      description: "My DataCamp competition submission",
+      description: "(EXTERNAL LINK) My DataCamp competition submission",
       link: "https://www.datacamp.com/competitions/how-can-hospitals-reduce-readmissions",
       type: "blog",
       tags: ["r", "shiny", "healthcare", "statistics"],
