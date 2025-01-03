@@ -1,0 +1,205 @@
+---
+title: "Getting Quarto Started in NextJS"
+date: 01/02/2024
+date-format: "MMM D, YYYY"
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+## Overview
+This guide demonstrates an initial approach to displaying Quarto documents in a NextJS application using iframes. I am writing this post because I couldn't find any solution to this issue on the interwebs.
+
+While not the final solution, it provides a working foundation for integrating Quarto's notebooks with NextJS's modern web framework capabilities. The end goal is to move beyond iframes to a fully integrated solution where Quarto content is parsed into native React components, but this implementation serves as a practical starting point for those looking for a quick and dirty solution
+
+## File Structure
+```
+app/
+├── blog/
+│   ├── [slug]/
+│   │   ├── layout.tsx  # Right sidebar with blog links
+│   │   └── page.tsx    # iframe container for Quarto content
+│   ├── BlogSummary.tsx # Blog metadata and post info
+│   └── page.tsx        # Main blog listing page
+└── public/
+    └── blogs/          # Quarto HTML files
+```
+
+## Implementation Steps
+
+### 1. Quarto Document Setup
+Create your Quarto document with embedded resources enabled:
+```yaml
+---
+title: "Your Blog Title"
+embed-resources: true
+---
+```
+
+### 2. Generate Self-Contained HTML
+Run Quarto's render command to generate a self-contained HTML file:
+```bash
+quarto render document.qmd
+```
+
+### 3. NextJS Integration
+Place the generated HTML in your public folder:
+```bash
+mv document.html public/blogs/
+```
+
+### 4. Create Blog Components
+
+#### Layout Component (blog/[slug]/layout.tsx)
+```typescript
+export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex h-screen m-0 p-0">
+      <main className="flex-1 m-0 p-0">
+        {children}
+      </main>
+      <aside className="w-48 bg-white shadow-lg h-screen overflow-y-auto border-l">
+        <div className="p-3">
+          <h2 className="text-lg font-semibold mb-3">All Posts</h2>
+          <nav>
+            {BlogPosts.map((post) => (
+              <a key={post.title} href={post.link}>
+                {post.title}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    </div>
+  );
+}
+```
+
+#### Page Component (blog/[slug]/page.tsx)
+```typescript
+interface PageProps {
+  params: {
+    slug: string;
+  }
+}
+
+export default function BlogPost({ params }: PageProps) {
+  return (
+    <div className="w-full h-screen">
+      <iframe
+        src={`/blogs/${params.slug}.html`}
+        className="w-full h-full border-none"
+        title="Blog post content"
+        style={{ 
+          minHeight: '100vh',
+          width: '100%',
+          margin: 0,
+          padding: 0,
+          border: 'none'
+        }}
+      />
+    </div>
+  );
+}
+```
+
+### 5. Blog Metadata
+Update BlogSummary.tsx with your post information:
+```typescript
+interface BlogPost {
+  title: string;
+  description: string;
+  link: string;
+  type: 'blog' | 'project';
+  tags: string[];
+  featured: string;
+  image: string;
+  linkType?: 'email' | 'github' | 'external';
+}
+
+export const BlogPosts: BlogPost[] = [
+  {
+    title: "Getting Quarto Started in NextJS",
+    description: "How to integrate Quarto with NextJS",
+    link: "/blog/quarto-nextjs",
+    type: "blog",
+    tags: ["nextjs", "web dev", "quarto"],
+    featured: 'true',
+    image: "/favicon.ico"
+  }
+];
+```
+
+## Benefits of This Approach
+- Maintains Quarto's original styling and functionality
+- Simple implementation with minimal configuration
+- Clean separation between Quarto content and NextJS app
+- Easy to update and manage blog posts
+- Avoids having a .html URL tag
+
+## Future Steps
+- Implement a custom React component parser to directly process .qmd files
+- Extract and transform Quarto HTML elements into optimized React components
+- Integrate Quarto's JavaScript runtime with NextJS's client-side rendering
+- Leverage NextJS's built-in Image and Script optimization for better performance
+- Utilize Server Components for improved SEO and reduced client-side JavaScript
+- Implement static generation for Quarto content during build time
+- Create a custom webpack loader for direct .qmd file importing
+
+
+
+
+
+
+## Example Quarto Output
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+library(ggplot2)
+
+x = seq(1:100)
+y = seq(1:100)^2
+df = data.frame(x,y)
+
+ggplot(df,aes(x = x, y = y))+geom_point()
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+x = seq(1:100)
+y = seq(1:100)^2
+df = data.frame(x,y)
+
+p = ggplot(df,aes(x = x, y = y))+geom_point()
+
+p = ggplotly(p)
+
+p
+```
+
+this is my $s$ and this is my $\phi$
+

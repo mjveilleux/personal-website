@@ -15,7 +15,7 @@ export interface BlogPost {
     {
       title: "Getting Quarto Started in NextJS",
       description: "How do you get your Quarto doc to work in NextJS, I found an answer!",
-      link: "/blog/blog",
+      link: "/blog/2025-01-02-quarto-in-next-js",
       type: "blog",
       tags: ["nextjs", "web dev", "quarto"],
       featured: 'true',
