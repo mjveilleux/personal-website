@@ -40,7 +40,7 @@ export default function Blog() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-4xl font-light"> My Blog</h1>
+        <h1 className="text-4xl font-light"> Mason's Musings</h1>
         <p className="text-lg text-stone-700">
           I write my musings here.
         </p>
