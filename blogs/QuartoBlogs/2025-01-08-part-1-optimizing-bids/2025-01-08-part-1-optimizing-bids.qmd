@@ -1,0 +1,88 @@
+---
+title: "Part 1: Revenue Optimization in Construction Bids"
+date: 01/08/2025
+date-format: "MMM D, YYYY"
+format:
+  html:
+    embed-resources: true
+format: html
+editor: visual
+---
+
+### Revenue Optimization in Construction Bids
+
+Construction is an industry defined by uncertainty. Extended project deadlines, changing job requirements, or delivery issues can transform comfortable margins into break-even scenarios---or worse. Project managers and salespeople must navigate numerous unknowns to maintain smooth operations and earn their commission. While every construction company faces these challenges, what separates the industry leaders from the rest is how they approach this uncertainty systematically.
+
+Much like how the Oakland A's revolutionized baseball by replacing gut feelings with data-driven decisions (as chronicled in Moneyball), construction companies can transform their bidding strategy through systematic modeling. Instead of relying solely on experience and intuition, companies can develop frameworks that optimize revenue while maintaining market competitiveness.
+
+## The Power of Modeling
+
+A well-designed model serves multiple crucial functions:
+
+First, it forces concrete thinking about the problems you're solving. Rather than relying on vague hunches, you must explicitly state your assumptions and reasoning.
+
+Second, it creates a foundation for continuous improvement. As you gather more data and identify new patterns, you can refine your approach based on real-world outcomes.
+
+Third, it allows you to explore different scenarios and strategies systematically. You can test various approaches without risking actual bids.
+
+Finally, it provides a framework for validating your assumptions against real data, helping you identify where your understanding might be incomplete or incorrect.
+
+## Current Approaches to Bid Modeling
+
+Scientists have developed several classes of models to tackle the bidding optimization challenge:
+
+1.  Prediction models that estimate minimum bids based on job characteristics, ranging from simple linear regression to sophisticated machine learning approaches
+2.   Game-theoretic models that maximize bid utility while accounting for expected profit and winner's curse parameters
+3.  Competition analysis models that estimate competitors' markup distributions based on your company's markup patterns
+
+All these approaches aim to answer the fundamental question: "What is the optimal bid for this specific job?"
+
+## A Unified Framework for Bid Optimization
+
+We can express this challenge mathematically as:
+
+$$
+ \pi = Pr(win | b)*(b - C)
+$$
+
+Where the expected profit $\pi$ depends on:
+
+-   The probability of winning given the bid amount $Pr(win|b)$
+
+-   The difference between the bid amount \$b\$ and the cost $C$
+
+The cost itself can be modeled as a distribution to account for estimation uncertainty:
+
+$$
+C = c'*N(e,d)
+$$
+
+Where:
+
+-    $c'$ is the estimated job cost
+
+-    $N(e,d)$ represents historical cost deviation patterns
+
+-   $e$ is the average ratio of estimated to actual costs ($\frac{c_{estimate}}{c_{actual}}$)
+
+-    $d$ is the historical deviation of estimates from actual costs
+
+In an ideal scenario, $e$ equals 1 and $d$ is minimal, indicating accurate estimates with little variation.
+
+## The Challenge of Probability Estimation
+
+The most complex part of this equation is accurately estimating $Pr(win|b)$ . While the basic economic principle holds---higher prices decrease win probability---the relationship isn't simple. Factors like company reputation and quote delivery speed can significantly impact customer decisions.
+
+For example:
+
+-   Customers might accept higher bids from companies with strong reputations, reflecting a premium for reliable service
+
+-   Quick quote delivery might win a bid despite higher pricing, especially in an industry where quotes often take days
+
+These confounding factors can bias your model if not properly accounted for. This highlights the importance of experimental approaches, such as randomly varying markup rates across different customers and timeframes to gather unbiased data.
+
+## Looking Ahead
+
+What we ultimately seek is a model that not only provides optimal decisions but also quantifies outcome uncertainty. For instance, if a 10% markup yields a 50% win probability on a job with \$100 potential profit, you can expect \$50 profit per bid at that markup level.
+
+In Part 2 of this series, we'll explore a practical example of bid modeling and discuss the challenges in obtaining unbiased model parameters.
