@@ -5,7 +5,6 @@ date-format: "MMM D, YYYY"
 format:
   html:
     embed-resources: true
-format: html
 editor: visual
 ---
 
