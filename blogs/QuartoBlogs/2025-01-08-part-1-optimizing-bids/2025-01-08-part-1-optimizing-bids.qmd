@@ -8,49 +8,47 @@ format:
 editor: visual
 ---
 
-### Revenue Optimization in Construction Bids
+# Revenue Optimization in Construction Bids
 
-Construction is an industry defined by uncertainty. Extended project deadlines, changing job requirements, or delivery issues can transform comfortable margins into break-even scenarios---or worse. Project managers and salespeople must navigate numerous unknowns to maintain smooth operations and earn their commission. While every construction company faces these challenges, what separates the industry leaders from the rest is how they approach this uncertainty systematically.
+The construction industry faces significant uncertainty at every turn. Extended project deadlines, changing job requirements, and delivery challenges can transform comfortable profit margins into break-even scenarios. While every construction company develops their own tactics to handle these challenges, there are systematic approaches one can take to head against the uncertainty.
 
-Much like how the Oakland A's revolutionized baseball by replacing gut feelings with data-driven decisions (as chronicled in Moneyball), construction companies can transform their bidding strategy through systematic modeling. Instead of relying solely on experience and intuition, companies can develop frameworks that optimize revenue while maintaining market competitiveness.
+One important aspect of the construction industry littered with uncertainty is placing bids and quoting. Knowing how much to bid, how long to deliver the quote, hedging risk against cost estimates is difficult to optimally quantify. It is even more difficult when trying to optimize both long-run profits and customer retention.
 
-## The Power of Modeling
+In this blog series, we'll provide an overview of how construction companies can place better bids. This article will introduce you to the key concepts in bidding models. Part 2 will demonstrate how a bidding model works in practice with a more detailed explanation of how such a model can affect your bottom line. Part 3 will then briefly discuss the challenges of implementing this model in practice and what data infrastructure should be put in place so that we can assure confidence in our bidding model across the business. At the end of this series, I hope that you have a better idea of what a bidding model can do for your construction company.
 
-A well-designed model serves multiple crucial functions:
+## Why Models Matter in Construction Bidding
 
-First, it forces concrete thinking about the problems you're solving. Rather than relying on vague hunches, you must explicitly state your assumptions and reasoning.
+Statistical models provide a framework for making better decisions under uncertainty. Rather than relying solely on intuition or past experiences, models help quantify risks and opportunities in concrete terms. They serve multiple crucial functions:
 
-Second, it creates a foundation for continuous improvement. As you gather more data and identify new patterns, you can refine your approach based on real-world outcomes.
+First, models force us to think explicitly about the problems we're solving. When we write down our assumptions mathematically, we can examine them more critically and refine them based on data.
 
-Third, it allows you to explore different scenarios and strategies systematically. You can test various approaches without risking actual bids.
+Second, models give us a foundation to build upon. As we gather more data and understand our market better, we can improve our models iteratively, leading to increasingly better decisions over time.
 
-Finally, it provides a framework for validating your assumptions against real data, helping you identify where your understanding might be incomplete or incorrect.
+## Better Bidding
 
-## Current Approaches to Bid Modeling
-
-Scientists have developed several classes of models to tackle the bidding optimization challenge:
-
-1.  Prediction models that estimate minimum bids based on job characteristics, ranging from simple linear regression to sophisticated machine learning approaches
-2.   Game-theoretic models that maximize bid utility while accounting for expected profit and winner's curse parameters
-3.  Competition analysis models that estimate competitors' markup distributions based on your company's markup patterns
-
-All these approaches aim to answer the fundamental question: "What is the optimal bid for this specific job?"
-
-## A Unified Framework for Bid Optimization
-
-We can express this challenge mathematically as:
+At its core, a good bidding model helps us answer a fundamental question: "What is the optimal bid amount given the characteristics of the job?" We can express this mathematically as:
 
 $$
- \pi = Pr(win | b)*(b - C)
+\pi = Pr(win | b)*(b - C)
 $$
 
-Where the expected profit $\pi$ depends on:
+Where:
 
--   The probability of winning given the bid amount $Pr(win|b)$
+-   $\pi$ is the expected profit
 
--   The difference between the bid amount \$b\$ and the cost $C$
+-   $Pr(win|b)$ is the probability of winning given the bid amount
 
-The cost itself can be modeled as a distribution to account for estimation uncertainty:
+```{=html}
+<!-- -->
+```
+-   $b$ is the bid amount
+
+```{=html}
+<!-- -->
+```
+-   $C$ is the cost of doing the job. This can be the sum of all aspects of the job (materials, labor, transportation, etc.).
+
+Characteristics of a job vary dramatically across different locations, customers, and time. Construction companies likely have a dedicated team to estimate these costs given the characteristics of the job. We can incorporate how well we estimate any job by thinking of $C$ as a distribution that captures how well your team estimates jobs:
 
 $$
 C = c'*N(e,d)
@@ -58,30 +56,29 @@ $$
 
 Where:
 
--    $c'$ is the estimated job cost
+-   $c'$ is the estimated cost
 
--    $N(e,d)$ represents historical cost deviation patterns
+-   $N(e,d)$ is a normal distribution representing historical cost deviations
 
--   $e$ is the average ratio of estimated to actual costs ($\frac{c_{estimate}}{c_{actual}}$)
+-   $e$ is the average ratio of estimated to actual costs ($e = \frac{c'}{c^*}$ where $c^*$ is the actual costs and $e$ should be centered around 1)
 
--    $d$ is the historical deviation of estimates from actual costs
+-   $d$ is the historical deviation of estimates
 
-In an ideal scenario, $e$ equals 1 and $d$ is minimal, indicating accurate estimates with little variation.
+When a new job is bid, it takes a sample from $N(e,d)$. A value less than one is an under-estimate and more than one is an over-estimate. A better estimating team would have little variance $d$ and centered around $e = 1$.
 
-## The Challenge of Probability Estimation
+In practice, we would use this model by first getting the cost distribution $C$ . Then we would compare across markups from 0% markup and 100% (or some other high markup) and pick the markup that has the highest expected profit. The most difficult part in having the right model is estimating $Pr(win | b)$. In Part 2, we will go through how to do this, step-by-step. In Part 3, we'll go through the model's core assumptions and what we can do to counter-act bias in our estimates.
 
-The most complex part of this equation is accurately estimating $Pr(win|b)$ . While the basic economic principle holds---higher prices decrease win probability---the relationship isn't simple. Factors like company reputation and quote delivery speed can significantly impact customer decisions.
+This mathematical framework gives us a foundation for making better decisions. By understanding how our bid amounts affect win probability and how our cost estimates relate to actual costs, we can develop more refined strategies for different types of projects. Let's look at how this translates into practical decision-making.
 
-For example:
+## Making Optimal Decisions Under Uncertainty
 
--   Customers might accept higher bids from companies with strong reputations, reflecting a premium for reliable service
+The power of this model lies in its ability to quantify uncertainty and optimize decisions. For example, if we know that a 10% markup gives us a 50% probability of winning a bid, and the potential profit at that bid amount is \$100, we can expect an average profit of \$50 per bid at that markup level.
 
--   Quick quote delivery might win a bid despite higher pricing, especially in an industry where quotes often take days
+This statistical approach helps construction companies:
 
-These confounding factors can bias your model if not properly accounted for. This highlights the importance of experimental approaches, such as randomly varying markup rates across different customers and timeframes to gather unbiased data.
+1.  Make more informed bidding decisions based on quantifiable data
+2.  Better understand their cost estimation accuracy
+3.  Optimize markup strategies for different types of projects
+4.  Balance the trade-off between winning probability and profit margins
 
-## Looking Ahead
-
-What we ultimately seek is a model that not only provides optimal decisions but also quantifies outcome uncertainty. For instance, if a 10% markup yields a 50% win probability on a job with \$100 potential profit, you can expect \$50 profit per bid at that markup level.
-
-In Part 2 of this series, we'll explore a practical example of bid modeling and discuss the challenges in obtaining unbiased model parameters.
+The key is to remember that while no model is perfect, a systematic approach to bidding helps reduce uncertainty and improve long-term profitability. By continuously gathering data and refining our models, we can make increasingly better decisions in an inherently uncertain industry.
