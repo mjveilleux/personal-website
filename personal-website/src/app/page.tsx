@@ -85,7 +85,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <Image
-              src="/github_profile_pic.png"
+              src="/anon-pic.jpg"
               alt="Mason Veilleux"
               fill
               sizes='20x10'
