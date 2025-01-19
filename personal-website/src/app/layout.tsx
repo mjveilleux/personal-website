@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Mason Veilleux',
   description: 'Full-Stack Economics',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/anon-pic-transp.ico',
   },
 }
 
