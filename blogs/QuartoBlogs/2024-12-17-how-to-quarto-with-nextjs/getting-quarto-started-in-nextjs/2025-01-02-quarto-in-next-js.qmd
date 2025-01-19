@@ -9,28 +9,30 @@ editor: visual
 ---
 
 ## Overview
+
 This guide demonstrates an initial approach to displaying Quarto documents in a NextJS application using iframes. I am writing this post because I couldn't find any solution to this issue on the interwebs.
 
 While not the final solution, it provides a working foundation for integrating Quarto's notebooks with NextJS's modern web framework capabilities. The end goal is to move beyond iframes to a fully integrated solution where Quarto content is parsed into native React components, but this implementation serves as a practical starting point for those looking for a quick and dirty solution
 
 ## File Structure
-```
-app/
-├── blog/
-│   ├── [slug]/
-│   │   ├── layout.tsx  # Right sidebar with blog links
-│   │   └── page.tsx    # iframe container for Quarto content
-│   ├── BlogSummary.tsx # Blog metadata and post info
-│   └── page.tsx        # Main blog listing page
-└── public/
-    └── blogs/          # Quarto HTML files
-```
+
+    app/
+    ├── blog/
+    │   ├── [slug]/
+    │   │   ├── layout.tsx  # Right sidebar with blog links
+    │   │   └── page.tsx    # iframe container for Quarto content
+    │   ├── BlogSummary.tsx # Blog metadata and post info
+    │   └── page.tsx        # Main blog listing page
+    └── public/
+        └── blogs/          # Quarto HTML files
 
 ## Implementation Steps
 
 ### 1. Quarto Document Setup
+
 Create your Quarto document with embedded resources enabled:
-```yaml
+
+``` yaml
 ---
 title: "Your Blog Title"
 embed-resources: true
@@ -38,21 +40,26 @@ embed-resources: true
 ```
 
 ### 2. Generate Self-Contained HTML
+
 Run Quarto's render command to generate a self-contained HTML file:
-```bash
+
+``` bash
 quarto render document.qmd
 ```
 
 ### 3. NextJS Integration
+
 Place the generated HTML in your public folder:
-```bash
+
+``` bash
 mv document.html public/blogs/
 ```
 
 ### 4. Create Blog Components
 
-#### Layout Component (blog/[slug]/layout.tsx)
-```typescript
+#### Layout Component (blog/\[slug\]/layout.tsx)
+
+``` typescript
 export default function BlogLayout({
   children,
 }: {
@@ -80,8 +87,9 @@ export default function BlogLayout({
 }
 ```
 
-#### Page Component (blog/[slug]/page.tsx)
-```typescript
+#### Page Component (blog/\[slug\]/page.tsx)
+
+``` typescript
 interface PageProps {
     params: Promise<{
       slug: string;
@@ -111,8 +119,10 @@ interface PageProps {
 ```
 
 ### 5. Blog Metadata
+
 Update BlogSummary.tsx with your post information:
-```typescript
+
+``` typescript
 interface BlogPost {
   title: string;
   description: string;
@@ -138,25 +148,22 @@ export const BlogPosts: BlogPost[] = [
 ```
 
 ## Benefits of This Approach
-- Maintains Quarto's original styling and functionality
-- Simple implementation with minimal configuration
-- Clean separation between Quarto content and NextJS app
-- Easy to update and manage blog posts
-- Avoids having a .html URL tag
+
+-   Maintains Quarto's original styling and functionality
+-   Simple implementation with minimal configuration
+-   Clean separation between Quarto content and NextJS app
+-   Easy to update and manage blog posts
+-   Avoids having a .html URL tag
 
 ## Future Steps
-- Implement a custom React component parser to directly process .qmd files
-- Extract and transform Quarto HTML elements into optimized React components
-- Integrate Quarto's JavaScript runtime with NextJS's client-side rendering
-- Leverage NextJS's built-in Image and Script optimization for better performance
-- Utilize Server Components for improved SEO and reduced client-side JavaScript
-- Implement static generation for Quarto content during build time
-- Create a custom webpack loader for direct .qmd file importing
 
-
-
-
-
+-   Implement a custom React component parser to directly process .qmd files
+-   Extract and transform Quarto HTML elements into optimized React components
+-   Integrate Quarto's JavaScript runtime with NextJS's client-side rendering
+-   Leverage NextJS's built-in Image and Script optimization for better performance
+-   Utilize Server Components for improved SEO and reduced client-side JavaScript
+-   Implement static generation for Quarto content during build time
+-   Create a custom webpack loader for direct .qmd file importing
 
 ## Example Quarto Output
 
@@ -204,4 +211,3 @@ p
 ```
 
 this is my $s$ and this is my $\phi$
-

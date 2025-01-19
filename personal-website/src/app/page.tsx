@@ -59,7 +59,7 @@ export default function Home() {
               "I currently live in the San Francisco Bay Area with my wife and baby boy.",
               <>
                 I sometimes write{' '}
-                <Link href="/blogs" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">blogs</Link>
+                <Link href="/blog" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">blogs</Link>
                 {' '}and share my{' '}
                 <Link href="/research" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">research</Link>
                 {' '}on here.
