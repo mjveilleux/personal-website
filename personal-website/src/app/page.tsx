@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Github, Twitter, Linkedin, TwitterIcon, XIcon} from 'lucide-react'
+import { Github, Twitter, Linkedin, TwitterIcon, XIcon } from 'lucide-react'
 
 const socials = [
   { href: 'https://github.com/mjveilleux', label: 'GitHub', icon: Github },
@@ -15,13 +15,13 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="grid md:grid-cols-[1.5fr,1fr] gap-12 items-start">
-        <motion.div 
+       <motion.div
           className="space-y-8"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.h1 
+          <motion.h1
             className="text-lg leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -30,10 +30,9 @@ export default function Home() {
             <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
               Mason Veilleux
             </span>{' '}
-            and I am a data engineer, statistician, economist, back-end developer, and father. I like building cool stuff with cool people. 
+            and I am a data engineer, statistician, economist, back-end developer, and father. I like building cool stuff with cool people.
           </motion.h1>
-
-          <motion.div 
+          <motion.div
             className="space-y-6 text-lg leading-relaxed"
           >
             {[
@@ -47,11 +46,21 @@ export default function Home() {
               <>
                 I earned my MSc in Econometrics where I researched
                 <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
-                macroeconomics and industrial organization
+                  macroeconomics and industrial organization
                 </span>{","} particularly focusing on how firm-level characteristics and strategic behaviour shape macroeconomic outcomes.
-      
               </>,
-              "I currently live in the San Francisco Bay Area with my wife and baby boy.",
+              <>
+                I currently live in the San Francisco Bay Area and am developing{' '}
+                <a 
+                  href="https://www.bid-optimizer.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100"
+                >
+                  bid.optimizer
+                </a>
+                {' '}to help construction companies harness the tools of auction theory and bayesian statistics to make better bids for public works contracts.
+              </>,
               <>
                 I sometimes write{' '}
                 <Link href="/blog" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">blogs</Link>
@@ -71,9 +80,8 @@ export default function Home() {
             ))}
           </motion.div>
         </motion.div>
-
         <div className="space-y-6">
-          <motion.div 
+          <motion.div
             className="relative aspect-[3/4] w-full"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -89,7 +97,7 @@ export default function Home() {
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex justify-center gap-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
