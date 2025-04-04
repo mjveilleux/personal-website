@@ -2,12 +2,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Github, Twitter, Linkedin } from 'lucide-react'
+import { Github, Twitter, Linkedin, TwitterIcon, XIcon} from 'lucide-react'
 
 const socials = [
   { href: 'https://github.com/mjveilleux', label: 'GitHub', icon: Github },
-  { href: 'https://x.com/VeilleuxMason', label: 'Twitter', icon: Twitter },
-  { href: 'https://linkedin.com/in/mason-veilleux', label: 'LinkedIn', icon: Linkedin }
+  { href: 'https://x.com/VeilleuxMason', label: 'The Bad Place', icon: XIcon },
+  { href: 'https://linkedin.com/in/mason-veilleux', label: 'LinkedIn', icon: Linkedin },
+  { href: 'https://bsky.app/profile/fullstackeconomist.bsky.social', label: 'NotTwitter', icon: TwitterIcon }
 ] as const
 
 export default function Home() {
@@ -29,13 +30,7 @@ export default function Home() {
             <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
               Mason Veilleux
             </span>{' '}
-            and I am a Data Analyst at{' '}
-            <Link 
-              href="https://gamedatapros.com" 
-              className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100"
-            >
-              Game Data Pros
-            </Link> where I design experiments and engineer data pipelines to analyze experiments.
+            and I am a data engineer, statistician, economist, back-end developer, and father. I like building cool stuff with cool people. 
           </motion.h1>
 
           <motion.div 
@@ -47,7 +42,7 @@ export default function Home() {
                 <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
                   full-stack economist
                 </span>{" "}
-                who can build front-end applications, analytics pipelines, and analyze data using my expertise in economic theory and statistics.
+                who can build back-end applications, analytics pipelines, and analyze data using my expertise in economic theory and statistics.
               </>,
               <>
                 I earned my MSc in Econometrics where I researched
