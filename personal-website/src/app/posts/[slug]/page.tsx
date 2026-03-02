@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
-import { CMS_NAME } from "@/lib/constants";
+import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import markdownToHtml from "@/lib/markdownToHtml";
 import Alert from "@/app/_components/alert";
 import Container from "@/app/_components/container";
@@ -25,12 +25,7 @@ export default async function Post(props: Params) {
       <Container>
         <Header />
         <article className="mb-32">
-          <PostHeader
-            title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
-            author={post.author}
-          />
+          <PostHeader title={post.title} date={post.date} author={post.author} />
           <PostBody content={content} />
         </article>
       </Container>
@@ -52,13 +47,13 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     return notFound();
   }
 
-  const title = `${post.title} | Next.js Blog Example with ${CMS_NAME}`;
+  const title = `${post.title} | Mason Veilleux`;
 
   return {
     title,
     openGraph: {
       title,
-      images: [post.ogImage.url],
+      images: [HOME_OG_IMAGE_URL],
     },
   };
 }

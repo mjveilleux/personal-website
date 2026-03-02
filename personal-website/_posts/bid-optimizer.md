@@ -1,13 +1,10 @@
 ---
 title: "Designing a Bid Optimizer for Public Works"
 excerpt: "Blending auction theory, streaming materials data, and risk envelopes so estimators can submit confident bids in minutes."
-coverImage: "/assets/blog/bid-optimizer/cover.jpg"
 date: "2025-01-15T12:00:00.000Z"
 author:
   name: Mason Veilleux
   picture: "/assets/blog/authors/mason.jpg"
-ogImage:
-  url: "/assets/blog/bid-optimizer/cover.jpg"
 tags:
   - Auction theory
   - Public works

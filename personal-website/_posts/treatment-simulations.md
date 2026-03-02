@@ -1,13 +1,10 @@
 ---
 title: "Simulating Treatment Effects for Acquisition"
 excerpt: "Building a scenario simulator that let growth leads test incentives, channel mixes, and operational constraints before spending a dollar."
-coverImage: "/assets/blog/treatment-simulations/cover.jpg"
 date: "2025-02-20T12:00:00.000Z"
 author:
   name: Mason Veilleux
   picture: "/assets/blog/authors/mason.jpg"
-ogImage:
-  url: "/assets/blog/treatment-simulations/cover.jpg"
 tags:
   - Experiments
   - Simulation
