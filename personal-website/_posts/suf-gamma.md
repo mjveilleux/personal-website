@@ -92,9 +92,9 @@ All of this to get the likelihood function we will write out in Stan:
 
 $$
 \ell(\text{shape}, \text{rate}) = -n\,\log\Gamma(\text{shape})
-\; + \; n\,\text{shape}\,\log\text{rate}
-\; + \; (\text{shape}-1)\,t_1
-\; - \; \text{rate}\,t_2.
+\\ + \; n\,\text{shape}\,\log\text{rate}
+\\ + \; (\text{shape}-1)\,t_1
+\\ - \; \text{rate}\,t_2
 $$
 
 This exposes $t_2$ as the natural stat for `rate` (linear term $-\,\text{rate}\,t_2$) and $t_1$ for `shape`.
