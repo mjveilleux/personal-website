@@ -6,7 +6,7 @@ summary: Working sufficient statistics for the gamma distribution in Stan
 katex: true
 ---
 
-I've been working on a work project to get posterior distributions of revenue. I wanted to use sufficient statistics on revenue which is gamma distributed. I came across [this paper by Fraser, Rekkas, and Wong](https://utstat.utoronto.ca/dfraser/documents/146-cjs.pdf) which I thought would work for my use case. Below is the Stan implementation and a high-level overview of the approach the paper makes.
+I needed to optimize some Stan code at work which required sufficient statistics for the revenue distribution. I came across [this paper](https://utstat.utoronto.ca/dfraser/documents/146-cjs.pdf) and wanted to test it out. Below is the Stan implementation and a high-level overview of the approach the paper makes.
 
 # The Approach
 
