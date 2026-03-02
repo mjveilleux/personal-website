@@ -6,7 +6,7 @@ summary: Working sufficient statistics for the gamma distribution in Stan
 katex: true
 ---
 
-I've been working on a work project to get posterior distributions of revenue. I wanted to use sufficient statistics on revenue which is gamma distributed. I came across this paper (https://utstat.utoronto.ca/dfraser/documents/146-cjs.pdf) -- specifically Equation 4 -- which I thought would work for my use case. Below is the Stan implementation and a high-level overview of the approach the paper makes.
+I've been working on a work project to get posterior distributions of revenue. I wanted to use sufficient statistics on revenue which is gamma distributed. I came across [this paper by Fraser, Rekkas, and Wong](https://utstat.utoronto.ca/dfraser/documents/146-cjs.pdf) which I thought would work for my use case. Below is the Stan implementation and a high-level overview of the approach the paper makes.
 
 # The Approach
 
@@ -160,14 +160,23 @@ generated quantities {
 
 Here are the results from the simulated R code below:
 
-### Posterior Summary With Truths
+### Truth vs Stan Posterior
 
-| variable | truth   | mean   | median | sd      | 2.5%   | 97.5%  |
-|----------|---------|--------|--------|---------|--------|--------|
-| shape    | 3.0000  | 3.000  | 3.000  | 0.131   | 2.760  | 3.260  |
-| rate     | 25.0000 | 25.300 | 25.200 | 1.200   | 23.000 | 27.700 |
-| scale    | 0.0400  | 0.0397 | 0.0397 | 0.00188 | 0.0362 | 0.0435 |
-| mu       | 0.1200  | 0.119  | 0.119  | 0.00220 | 0.115  | 0.123  |
+| Parameter | Truth  | Post.Mean | 95% CrI            |
+|-----------|--------|-----------|--------------------|
+| shape     | 3.0000 | 3.0008    | ( 2.756,  3.264)   |
+| rate      | 25.0000| 25.2527   | (23.012, 27.659)   |
+| scale     | 0.0400 | 0.0397    | ( 0.036,  0.043)   |
+| mean (mu) | 0.1200 | 0.1189    | ( 0.115,  0.123)   |
+
+### Posterior summary (selected variables)
+
+| variable          | mean   | median | sd      | 2.5%   | 97.5%  |
+|-------------------|--------|--------|---------|--------|--------|
+| shape             | 3.000  | 3.000  | 0.131   | 2.760  | 3.260  |
+| rate              | 25.300 | 25.200 | 1.200   | 23.000 | 27.700 |
+| scale             | 0.0397 | 0.0397 | 0.00188 | 0.0362 | 0.0435 |
+| mu                | 0.119  | 0.119  | 0.00220 | 0.115  | 0.123  |
 
 
 
@@ -240,4 +249,3 @@ for (i in seq_along(params)) {
               labels[i], truths[i], post_means[params[i]], post_q025[params[i]], post_q975[params[i]]))
 }
 ```
-

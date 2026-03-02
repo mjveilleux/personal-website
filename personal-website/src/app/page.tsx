@@ -71,46 +71,6 @@ const formatDate = (date: string) =>
     year: "numeric",
   }).format(new Date(date));
 
-const HeroVenn = () => (
-  <div className="relative mx-auto mt-6 h-64 w-full max-w-md">
-    <svg viewBox="0 0 320 220" className="absolute inset-0 h-full w-full">
-      <defs>
-        <linearGradient id="vennA" x1="0%" x2="100%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#dfe9e3" />
-          <stop offset="100%" stopColor="#b9d4c5" />
-        </linearGradient>
-        <linearGradient id="vennB" x1="0%" x2="100%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#f2c6a0" />
-          <stop offset="100%" stopColor="#f8b18d" />
-        </linearGradient>
-        <linearGradient id="vennC" x1="0%" x2="100%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#c8dae2" />
-          <stop offset="100%" stopColor="#b0c7d4" />
-        </linearGradient>
-      </defs>
-      <g opacity="0.85">
-        <circle cx="120" cy="110" r="90" fill="url(#vennA)" />
-        <circle cx="200" cy="110" r="90" fill="url(#vennB)" />
-        <circle cx="160" cy="160" r="90" fill="url(#vennC)" />
-      </g>
-    </svg>
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
-      <p className="text-xs uppercase tracking-[0.5em] text-slate-500">
-        Sweet spot
-      </p>
-      <p className="font-display text-2xl text-[#1f403c]">Full-stack analytics</p>
-    </div>
-    <span className="absolute left-2 top-6 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
-      Backend development
-    </span>
-    <span className="absolute right-3 top-6 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
-      Data science
-    </span>
-    <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
-      Data engineering
-    </span>
-  </div>
-);
 
 export default function HomePage() {
   const posts = getAllPosts();
@@ -124,10 +84,10 @@ export default function HomePage() {
       <section className="relative z-10 mx-auto grid max-w-6xl gap-12 px-6 pt-24 md:grid-cols-[minmax(0,_1.2fr)_minmax(0,_0.8fr)] md:items-center">
         <div className="space-y-6">
           <p className="text-xs font-semibold uppercase tracking-[0.45em] text-slate-500">
-            Hej, I'm Mason
+            Hey, I'm Mason
           </p>
           <h1 className="font-display text-4xl leading-tight text-slate-900 sm:text-5xl md:text-6xl">
-            Full-stack analytics for calm, real-time decision making.
+            Full-stack analytics for probabilistic, real-time decision making.
           </h1>
           <p className="text-lg text-slate-700">
             I build end-to-end data products—pipelines, probabilistic models, APIs, and the
@@ -172,12 +132,7 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 text-center">
-            <p className="text-xs uppercase tracking-[0.4em] text-slate-500">
-              Skill blend
-            </p>
-            <HeroVenn />
-          </div>
+          {/* removed skill-blend visual */}
         </div>
       </section>
 
