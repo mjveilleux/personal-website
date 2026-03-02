@@ -1,125 +1,364 @@
-'use client';
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Github, Twitter, Linkedin, TwitterIcon, XIcon } from 'lucide-react'
+import Link from "next/link";
+import { getAllPosts } from "@/lib/api";
+import { flagshipProjects } from "@/lib/projects";
 
-const socials = [
-  { href: 'https://github.com/mjveilleux', label: 'GitHub', icon: Github },
-  { href: 'https://x.com/VeilleuxMason', label: 'The Bad Place', icon: XIcon },
-  { href: 'https://linkedin.com/in/mason-veilleux', label: 'LinkedIn', icon: Linkedin },
-  { href: 'https://bsky.app/profile/fullstackeconomist.bsky.social', label: 'NotTwitter', icon: TwitterIcon }
-] as const
+const coreRoles = [
+  {
+    title: "Backend developer",
+    detail: "Rust & TypeScript services, API design, observability",
+  },
+  {
+    title: "Data engineer",
+    detail: "Pipelines, warehouses, semantic layers, real-time sinks",
+  },
+  {
+    title: "Data scientist",
+    detail: "Probabilistic modeling, experiments, Bayesian decisioning",
+  },
+];
 
-export default function Home() {
+const capabilities = [
+  {
+    title: "Experiment design",
+    copy:
+      "Crafting trustworthy experiments, uplift tests, and quasi-experimental studies when randomization is off the table.",
+  },
+  {
+    title: "Probabilistic modeling",
+    copy:
+      "Bayesian time series, missing-data inference, and scenario simulations that show the full distribution of outcomes.",
+  },
+  {
+    title: "Database optimization",
+    copy:
+      "Modeling warehouses and OLTP stores for sub-second analytics, applying vectorized engines, and ruthless indexing.",
+  },
+  {
+    title: "Data engineering",
+    copy:
+      "Streaming and batch pipelines, transformation layers, and data contracts that make real-time analysis feel boring.",
+  },
+];
+
+const values = [
+  {
+    title: "Full-stack or bust",
+    description:
+      "I stay close to the entire data surface area—from schema design to final narrative—so insights stay traceable.",
+  },
+  {
+    title: "Anchorage perspective",
+    description:
+      "I live with my family in Anchorage, Alaska where long winters teach patience and intentional collaboration.",
+  },
+  {
+    title: "Actionable calm",
+    description:
+      "Clarity beats dashboards. Every delivery ends with clear decisions, owners, and probabilities attached.",
+  },
+];
+
+const nowMoments = [
+  "Building full-stack analytics stacks for civic tech teams",
+  "Writing about Bayesian operations for real-time products",
+  "Mentoring data scientists on backend ergonomics",
+];
+
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+
+const HeroVenn = () => (
+  <div className="relative mx-auto mt-6 h-64 w-full max-w-md">
+    <svg viewBox="0 0 320 220" className="absolute inset-0 h-full w-full">
+      <defs>
+        <linearGradient id="vennA" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="#dfe9e3" />
+          <stop offset="100%" stopColor="#b9d4c5" />
+        </linearGradient>
+        <linearGradient id="vennB" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="#f2c6a0" />
+          <stop offset="100%" stopColor="#f8b18d" />
+        </linearGradient>
+        <linearGradient id="vennC" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="#c8dae2" />
+          <stop offset="100%" stopColor="#b0c7d4" />
+        </linearGradient>
+      </defs>
+      <g opacity="0.85">
+        <circle cx="120" cy="110" r="90" fill="url(#vennA)" />
+        <circle cx="200" cy="110" r="90" fill="url(#vennB)" />
+        <circle cx="160" cy="160" r="90" fill="url(#vennC)" />
+      </g>
+    </svg>
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
+      <p className="text-xs uppercase tracking-[0.5em] text-slate-500">
+        Sweet spot
+      </p>
+      <p className="font-display text-2xl text-[#1f403c]">Full-stack analytics</p>
+    </div>
+    <span className="absolute left-2 top-6 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
+      Backend development
+    </span>
+    <span className="absolute right-3 top-6 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
+      Data science
+    </span>
+    <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
+      Data engineering
+    </span>
+  </div>
+);
+
+export default function HomePage() {
+  const posts = getAllPosts();
+  const featuredPosts = posts.slice(0, 3);
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="grid md:grid-cols-[1.5fr,1fr] gap-12 items-start">
-       <motion.div
-          className="space-y-8"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.h1
-            className="text-lg leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            My name is{' '}
-            <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
-              Mason Veilleux
-            </span>{' '}
-            and I am a data engineer, statistician, economist, back-end developer, and father. I like building cool stuff with cool people.
-          </motion.h1>
-          <motion.div
-            className="space-y-6 text-lg leading-relaxed"
-          >
-            {[
-              <>
-                I consider myself a {" "}
-                <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
-                  full-stack economist
-                </span>{" "}
-                who can build back-end applications, analytics pipelines, and analyze data using my expertise in economic theory and statistics.
-              </>,
-              <>
-                I earned my MSc in Econometrics where I researched
-                <span className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">
-                  macroeconomics and industrial organization
-                </span>{","} particularly focusing on how firm-level characteristics and strategic behaviour shape macroeconomic outcomes.
-              </>,
-              <>
-                I currently live in the San Francisco Bay Area and am developing{' '}
-                <a 
-                  href="https://www.bid-optimizer.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100"
-                >
-                  bid.optimizer
-                </a>
-                {' '}to help construction companies harness the tools of auction theory and bayesian statistics to make better bids for public works contracts.
-              </>,
-              <>
-                I sometimes write{' '}
-                <Link href="/blog" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">blogs</Link>
-                {' '}and share my{' '}
-                <Link href="/research" className="text-blue-600 relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-blue-600 after:bottom-0 after:left-0 after:scale-x-0 after:transition-transform hover:after:scale-x-100">research</Link>
-                {' '}on here.
-              </>
-            ].map((content, i) => (
-              <motion.p
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
-              >
-                {content}
-              </motion.p>
-            ))}
-          </motion.div>
-        </motion.div>
-        <div className="space-y-6">
-          <motion.div
-            className="relative aspect-[3/4] w-full"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Image
-              src="/anon-pic.jpg"
-              alt="Mason Veilleux"
-              fill
-              sizes='20x10'
-              priority
-              className="object-cover rounded-lg hover:shadow-xl transition-shadow duration-300"
-            />
-          </motion.div>
+    <main className="relative isolate overflow-hidden pb-24">
+      <div className="pointer-events-none absolute inset-x-0 top-[-200px] z-0 mx-auto h-[420px] max-w-4xl rounded-full bg-gradient-to-br from-[#dfe9e3] via-[#f4ede4] to-[#f2c6a0] opacity-80 blur-3xl gentle-float" />
+      <div className="pointer-events-none absolute bottom-10 right-[-120px] h-64 w-64 rounded-full bg-gradient-to-tr from-[#c2d5ce] to-[#f0c5a8] opacity-60 blur-3xl" />
 
-          <motion.div
-            className="flex justify-center gap-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            {socials.map(({ href, label, icon: Icon }) => (
-              <Link
-                key={label}
-                href={href}
-                className="group relative p-2 hover:-translate-y-1 transition-transform"
-                target="_blank"
-                rel="noopener noreferrer"
+      <section className="relative z-10 mx-auto grid max-w-6xl gap-12 px-6 pt-24 md:grid-cols-[minmax(0,_1.2fr)_minmax(0,_0.8fr)] md:items-center">
+        <div className="space-y-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.45em] text-slate-500">
+            Hej, I'm Mason
+          </p>
+          <h1 className="font-display text-4xl leading-tight text-slate-900 sm:text-5xl md:text-6xl">
+            Full-stack analytics for calm, real-time decision making.
+          </h1>
+          <p className="text-lg text-slate-700">
+            I build end-to-end data products—pipelines, probabilistic models, APIs, and the
+            narratives that go with them. My background spans backend development, data
+            engineering, and data science, so nothing gets lost between layers.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {coreRoles.map((role) => (
+              <div key={role.title} className="hyggeligt-panel px-4 py-3 text-sm">
+                <p className="font-semibold text-[#1f403c]">{role.title}</p>
+                <p className="text-xs text-slate-500">{role.detail}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-4 pt-4">
+            <Link
+              href="/writings"
+              className="inline-flex items-center rounded-full bg-[#26443b] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition duration-300 hover:-translate-y-0.5 hover:bg-[#1f3731]"
+            >
+              Browse writings
+            </Link>
+            <a
+              href="mailto:masonjveilleux@gmail.com"
+              className="inline-flex items-center rounded-full border border-[#1f403c] px-6 py-3 text-sm font-semibold text-[#1f403c] transition duration-300 hover:-translate-y-0.5 hover:bg-white/70"
+            >
+              Start a project
+            </a>
+          </div>
+        </div>
+
+        <div className="hyggeligt-panel p-8 text-sm text-slate-600">
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">About</p>
+          <p className="mt-4 text-base text-slate-700">
+            I live in Anchorage, Alaska with my family. Long winters taught me to design
+            systems that are warm, resilient, and thoughtful. I believe great data science
+            is full-stack—plumbing to probabilistic modeling—so teams get clear, actionable
+            insights without the telephone game.
+          </p>
+          <ul className="mt-6 space-y-3">
+            {nowMoments.map((item) => (
+              <li key={item} className="flex gap-3">
+                <span className="mt-2 inline-block h-2 w-2 rounded-full bg-[#26443b]" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-10 text-center">
+            <p className="text-xs uppercase tracking-[0.4em] text-slate-500">
+              Skill blend
+            </p>
+            <HeroVenn />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6" id="approach">
+        <div className="hyggeligt-panel px-8 py-12">
+          <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
+            Capabilities
+          </p>
+          <h2 className="mt-4 font-display text-4xl text-slate-900">
+            Full-stack analytics in practice.
+          </h2>
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            {capabilities.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-3xl border border-white/40 bg-white/80 p-6 shadow-inner shadow-white/20 transition duration-300 hover:-translate-y-1 hover:bg-white"
               >
-                <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-stone-800 text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                  {label}
+                <h3 className="text-xl font-semibold text-[#1f403c]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm text-slate-600">{item.copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6" id="projects">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
+          <div className="hyggeligt-panel p-8 lg:w-1/3">
+            <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
+              Previous projects
+            </p>
+            <h2 className="mt-3 font-display text-3xl text-slate-900">
+              Three builds I keep referencing.
+            </h2>
+            <p className="mt-4 text-sm text-slate-600">
+              Dive into detailed build logs that connect backend engineering, data
+              pipelines, and probabilistic reasoning—each story links to the full
+              write-up.
+            </p>
+          </div>
+          <div className="space-y-6 lg:w-2/3">
+            {flagshipProjects.map((project) => (
+              <Link
+                key={project.title}
+                href={`/posts/${project.slug}`}
+                className="block"
+              >
+                <article className="hyggeligt-panel p-6 transition duration-300 hover:-translate-y-1">
+                  <h3 className="text-2xl font-semibold text-[#1f403c]">
+                    {project.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600">{project.summary}</p>
+                  <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">
+                    {project.highlights.map((highlight: string) => (
+                      <li key={highlight}>{highlight}</li>
+                    ))}
+                  </ul>
+                <span className="mt-4 inline-block text-sm font-semibold text-[#1f403c]">
+                  Read build log -&gt;
                 </span>
-                <Icon className="w-6 h-6 text-stone-600 group-hover:text-stone-900 transition-colors" />
+                </article>
               </Link>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </div>
-    </div>
-  )
+      </section>
+
+      <section
+        id="values"
+        className="relative z-10 mx-auto mt-24 max-w-6xl px-6"
+      >
+        <div className="grid gap-10 md:grid-cols-[0.8fr,1.2fr]">
+          <div className="hyggeligt-panel p-8">
+            <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
+              About
+            </p>
+            <h2 className="mt-3 font-display text-3xl text-slate-900">
+              How I like to work with teams.
+            </h2>
+            <p className="mt-4 text-sm text-slate-600">
+              My work pairs backend craftsmanship with probabilistic modeling, so every
+              metric or model is grounded in well-behaved data. I’m happiest when we can
+              whiteboard, write, and ship within the same week.
+            </p>
+          </div>
+          <div className="space-y-6">
+            {values.map((value, index) => (
+              <article
+                key={value.title}
+                className="hyggeligt-panel p-6 fade-slide"
+                style={{ animationDelay: `${index * 120}ms` }}
+              >
+                <h3 className="text-2xl font-semibold text-[#1f403c]">
+                  {value.title}
+                </h3>
+                <p className="mt-3 text-sm text-slate-600">{value.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {featuredPosts.length > 0 && (
+        <section
+          id="writing"
+          className="relative z-10 mx-auto mt-24 max-w-6xl px-6"
+        >
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
+                Writing
+              </p>
+              <h2 className="mt-3 font-display text-4xl text-slate-900">
+                Field notes & experiments
+              </h2>
+            </div>
+            <Link
+              href="/writings"
+              className="text-sm font-semibold text-[#1f403c] underline-offset-4 hover:underline"
+            >
+              View all writings
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-8 lg:grid-cols-3">
+            {featuredPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/posts/${post.slug}`}
+                className="hyggeligt-panel flex flex-col p-6 transition duration-300 hover:-translate-y-2"
+              >
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                  {formatDate(post.date)}
+                </p>
+                <h3 className="mt-4 text-2xl font-semibold text-[#1f403c]">
+                  {post.title}
+                </h3>
+                <p className="mt-3 text-sm text-slate-600">{post.excerpt}</p>
+                <span className="mt-6 text-sm font-semibold text-[#1f403c]">
+                  Read chapter -&gt;
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section
+        id="contact"
+        className="relative z-10 mx-auto mt-24 max-w-4xl px-6"
+      >
+        <div className="hyggeligt-panel px-8 py-12 text-center">
+          <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
+            Let’s work together
+          </p>
+          <h2 className="mt-4 font-display text-4xl text-slate-900">
+            If your team needs a unique mix of backend rigor and probabilistic modeling, I’d love to hear from you.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600">
+            Send a note with the decision you’re trying to improve, or ask me to sketch a
+            roadmap for a full-stack analytics revamp. I typically reply within a day or two.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <a
+              href="mailto:masonjveilleux@gmail.com"
+              className="inline-flex items-center rounded-full bg-[#26443b] px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition duration-300 hover:-translate-y-0.5"
+            >
+              Email Mason
+            </a>
+            <a
+              href="https://www.linkedin.com/in/masonveilleux"
+              className="inline-flex items-center rounded-full border border-[#1f403c] px-8 py-3 text-sm font-semibold text-[#1f403c] transition duration-300 hover:-translate-y-0.5 hover:bg-white/70"
+            >
+              Connect on LinkedIn
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }

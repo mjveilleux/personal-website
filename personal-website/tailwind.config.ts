@@ -1,32 +1,44 @@
-import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import type { Config } from "tailwindcss";
 
-export default {
-  content: ["./src/**/*.tsx"],
+const config: Config = {
+  darkMode: "class",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      animation: {
-        'gradient-x': 'gradient-x 3s ease infinite',
-        'float': 'float 1s ease-out forwards',
+      colors: {
+        "accent-1": "#FAFAFA",
+        "accent-2": "#EAEAEA",
+        "accent-7": "#333",
+        success: "#0070f3",
+        cyan: "#79FFE1",
       },
-      keyframes: {
-        'gradient-x': {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-        },
-        'float': {
-          '0%': { opacity: '0', transform: 'translate(0, 0)' },
-          '50%': { opacity: '1', transform: 'translate(var(--tw-translate-x, 0), -10px) scale(1.5)' },
-          '100%': { opacity: '0', transform: 'translate(var(--tw-translate-x, 0), -20px) scale(0)' },
-        }
+      spacing: {
+        28: "7rem",
       },
-      backgroundSize: {
-        '200%': '200% 200%',
+      letterSpacing: {
+        tighter: "-.04em",
+      },
+      fontSize: {
+        "5xl": "2.5rem",
+        "6xl": "2.75rem",
+        "7xl": "4.5rem",
+        "8xl": "6.25rem",
+      },
+      boxShadow: {
+        sm: "0 5px 10px rgba(0, 0, 0, 0.12)",
+        md: "0 8px 30px rgba(0, 0, 0, 0.12)",
       },
     },
   },
   plugins: [],
-} as Config;
+};
+export default config;
