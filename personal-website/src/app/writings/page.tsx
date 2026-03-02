@@ -11,7 +11,7 @@ const formatDate = (date: string) =>
 export const metadata = {
   title: "Writings | Mason Veilleux",
   description:
-    "Field notes on full-stack analytics—real-time data systems, Bayesian modeling, experiment design, and calm decision making.",
+    "Field notes from the top of mind. Usually related to statistics or backend development",
 };
 
 export default function WritingsPage() {
@@ -28,13 +28,8 @@ export default function WritingsPage() {
       <div className="hyggeligt-panel px-8 py-12 text-center">
         <p className="text-sm uppercase tracking-[0.4em] text-slate-500">Writings</p>
         <h1 className="mt-4 font-display text-5xl text-slate-900">
-          Dispatches from a full-stack analytics practice.
+          Dispatches from head banging.
         </h1>
-        <p className="mx-auto mt-4 max-w-3xl text-base text-slate-600">
-          Alphabetized for quick scanning, tagged for depth. Expect essays on
-          real-time data stacks, Bayesian intuition, experiment craft, and the
-          rituals that keep teams clear-headed.
-        </p>
       </div>
 
       {tags.length > 0 && (

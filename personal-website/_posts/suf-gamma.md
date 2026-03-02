@@ -1,5 +1,5 @@
 ---
-title: "Gamma Inference from Sufficient Statistics"
+title: "Sufficient Statistics for the Gamma in Stan"
 date: 2026-03-02
 tags: [stan, bayes, sufficient-statistics]
 summary: Working sufficient statistics for the gamma distribution in Stan
@@ -23,13 +23,25 @@ There are two steps.
 
 If we do some simple algebra there are two minimal sufficient statistics: the mean ($t_2$ in the paper) and the shape ($t_1$). 
 
-$t_2$ is derived straight from the arithmetic mean:
+$t_2$ is the arithmetic sum which we will use to derive the arithmetic mean:
 
-$$\hat{\mu_A} = \frac{\sum_{i=1}^n y_i}{n}$$
+$$
+t_2 = \sum_{i=1}^n y_i
+$$
 
-$t_1$ is derived from the geometric mean:
+$$
+\hat{\mu_A} = \frac{t_2}{n}
+$$
 
-$$\hat{\mu_G} = e^{\frac{\sum_{i=1}^n \log y_i}{n}}$$.
+$t_1$ is the sum of log values which we will use to derive the geometric mean:
+
+$$
+t_1 = \sum_{i=1}^n \log y_i
+$$
+
+$$
+\hat{\mu_G} = e^{\frac{t_1}{n}}
+$$
 
 ### Step 2: Derive the skewness of the distribution from the means
 
@@ -87,7 +99,7 @@ $$
 
 This exposes $t_2$ as the natural stat for `rate` (linear term $-\,\text{rate}\,t_2$) and $t_1$ for `shape`.
 
-# Stan
+# The Stan Implementation
 
 So here is all we need to estimate a gamma distribution from sufficient statistics.
 

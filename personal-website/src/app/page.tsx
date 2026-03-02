@@ -5,63 +5,63 @@ import { flagshipProjects } from "@/lib/projects";
 const coreRoles = [
   {
     title: "Backend developer",
-    detail: "Rust & TypeScript services, API design, observability",
+    detail: "API design, data contracts",
   },
   {
     title: "Data engineer",
-    detail: "Pipelines, warehouses, semantic layers, real-time sinks",
+    detail: "Pipelines, semantic layers, real-time analytics",
   },
   {
     title: "Data scientist",
-    detail: "Probabilistic modeling, experiments, Bayesian decisioning",
+    detail: "Probabilistic modeling, experimentation, Bayesian decision science",
   },
 ];
 
 const capabilities = [
   {
-    title: "Experiment design",
-    copy:
-      "Crafting trustworthy experiments, uplift tests, and quasi-experimental studies when randomization is off the table.",
-  },
-  {
     title: "Probabilistic modeling",
     copy:
-      "Bayesian time series, missing-data inference, and scenario simulations that show the full distribution of outcomes.",
+      "Bayesian time series, missing-data inference, and scenario simulations, potential outcomes estimation",
+  },
+  {
+    title: "Experiment design",
+    copy:
+      "Crafting trustworthy experiments using the field's most advanced algorithms",
   },
   {
     title: "Database optimization",
     copy:
-      "Modeling warehouses and OLTP stores for sub-second analytics, applying vectorized engines, and ruthless indexing.",
+      "Modeling the analytics semantic layer in on-prem and cloud infrastructure",
   },
   {
     title: "Data engineering",
     copy:
-      "Streaming and batch pipelines, transformation layers, and data contracts that make real-time analysis feel boring.",
+      "Streaming and batch pipelines and transformation layers that make real-time analysis work.",
   },
 ];
 
 const values = [
   {
-    title: "Full-stack or bust",
+    title: "Full-stack or Bust",
     description:
-      "I stay close to the entire data surface area—from schema design to final narrative—so insights stay traceable.",
+      "I stay close to the entire data surface area— from schema design to final narrative— so insights stay traceable.",
   },
   {
-    title: "Anchorage perspective",
+    title: "Decision Clarity",
     description:
-      "I live with my family in Anchorage, Alaska where long winters teach patience and intentional collaboration.",
+      "I provide not just insights but mental models that define your data-driven culture",
   },
   {
-    title: "Actionable calm",
+    title: "Always a Better Way",
     description:
-      "Clarity beats dashboards. Every delivery ends with clear decisions, owners, and probabilities attached.",
+      "I work towards improving current operations and processes to make life better for developers and end-users",
   },
 ];
 
 const nowMoments = [
-  "Building full-stack analytics stacks for civic tech teams",
+  "Building full-stack analytics stacks for rebar manufactures across the US",
   "Writing about Bayesian operations for real-time products",
-  "Mentoring data scientists on backend ergonomics",
+  "Providing mentorship to young developers shrouded in the uncertain times of AI",
 ];
 
 const formatDate = (date: string) =>
@@ -153,7 +153,7 @@ export default function HomePage() {
               href="mailto:masonjveilleux@gmail.com"
               className="inline-flex items-center rounded-full border border-[#1f403c] px-6 py-3 text-sm font-semibold text-[#1f403c] transition duration-300 hover:-translate-y-0.5 hover:bg-white/70"
             >
-              Start a project
+              Start a project with me
             </a>
           </div>
         </div>
@@ -161,10 +161,8 @@ export default function HomePage() {
         <div className="hyggeligt-panel p-8 text-sm text-slate-600">
           <p className="text-xs uppercase tracking-[0.4em] text-slate-500">About</p>
           <p className="mt-4 text-base text-slate-700">
-            I live in Anchorage, Alaska with my family. Long winters taught me to design
-            systems that are warm, resilient, and thoughtful. I believe great data science
-            is full-stack—plumbing to probabilistic modeling—so teams get clear, actionable
-            insights without the telephone game.
+            I am a data scientist-engineer, delivering full-stack analytics support in the manufacturing industry.
+            I currently, live in Alaska with my family. I enjoy cooking and hiking with my wife and (now) two year-old.
           </p>
           <ul className="mt-6 space-y-3">
             {nowMoments.map((item) => (
@@ -207,48 +205,48 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6" id="projects">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
-          <div className="hyggeligt-panel p-8 lg:w-1/3">
-            <p className="text-sm uppercase tracking-[0.4em] text-slate-500">
-              Previous projects
-            </p>
-            <h2 className="mt-3 font-display text-3xl text-slate-900">
-              Three builds I keep referencing.
-            </h2>
-            <p className="mt-4 text-sm text-slate-600">
-              Dive into detailed build logs that connect backend engineering, data
-              pipelines, and probabilistic reasoning—each story links to the full
-              write-up.
-            </p>
-          </div>
-          <div className="space-y-6 lg:w-2/3">
-            {flagshipProjects.map((project) => (
-              <Link
-                key={project.title}
-                href={`/posts/${project.slug}`}
-                className="block"
-              >
-                <article className="hyggeligt-panel p-6 transition duration-300 hover:-translate-y-1">
-                  <h3 className="text-2xl font-semibold text-[#1f403c]">
-                    {project.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-slate-600">{project.summary}</p>
-                  <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">
-                    {project.highlights.map((highlight: string) => (
-                      <li key={highlight}>{highlight}</li>
-                    ))}
-                  </ul>
-                <span className="mt-4 inline-block text-sm font-semibold text-[#1f403c]">
-                  Read build log -&gt;
-                </span>
-                </article>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      {/* <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6" id="projects"> */}
+      {/*   <div className="flex flex-col gap-8 lg:flex-row lg:items-center"> */}
+      {/*     <div className="hyggeligt-panel p-8 lg:w-1/3"> */}
+      {/*       <p className="text-sm uppercase tracking-[0.4em] text-slate-500"> */}
+      {/*         Previous projects */}
+      {/*       </p> */}
+      {/*       <h2 className="mt-3 font-display text-3xl text-slate-900"> */}
+      {/*         Three builds I keep referencing. */}
+      {/*       </h2> */}
+      {/*       <p className="mt-4 text-sm text-slate-600"> */}
+      {/*         Dive into detailed build logs that connect backend engineering, data */}
+      {/*         pipelines, and probabilistic reasoning—each story links to the full */}
+      {/*         write-up. */}
+      {/*       </p> */}
+      {/*     </div> */}
+      {/*     <div className="space-y-6 lg:w-2/3"> */}
+      {/*       {flagshipProjects.map((project) => ( */}
+      {/*         <Link */}
+      {/*           key={project.title} */}
+      {/*           href={`/posts/${project.slug}`} */}
+      {/*           className="block" */}
+      {/*         > */}
+      {/*           <article className="hyggeligt-panel p-6 transition duration-300 hover:-translate-y-1"> */}
+      {/*             <h3 className="text-2xl font-semibold text-[#1f403c]"> */}
+      {/*               {project.title} */}
+      {/*             </h3> */}
+      {/*             <p className="mt-2 text-sm text-slate-600">{project.summary}</p> */}
+      {/*             <ul className="mt-3 list-disc pl-5 text-sm text-slate-600"> */}
+      {/*               {project.highlights.map((highlight: string) => ( */}
+      {/*                 <li key={highlight}>{highlight}</li> */}
+      {/*               ))} */}
+      {/*             </ul> */}
+      {/*             <span className="mt-4 inline-block text-sm font-semibold text-[#1f403c]"> */}
+      {/*               Read build log -&gt; */}
+      {/*             </span> */}
+      {/*           </article> */}
+      {/*         </Link> */}
+      {/*       ))} */}
+      {/*     </div> */}
+      {/*   </div> */}
+      {/* </section> */}
+      {/**/}
       <section
         id="values"
         className="relative z-10 mx-auto mt-24 max-w-6xl px-6"
@@ -264,7 +262,7 @@ export default function HomePage() {
             <p className="mt-4 text-sm text-slate-600">
               My work pairs backend craftsmanship with probabilistic modeling, so every
               metric or model is grounded in well-behaved data. I’m happiest when we can
-              whiteboard, write, and ship within the same week.
+              whiteboard, write, and ship products that make decision-making under uncertainty clearer.
             </p>
           </div>
           <div className="space-y-6">
@@ -295,7 +293,7 @@ export default function HomePage() {
                 Writing
               </p>
               <h2 className="mt-3 font-display text-4xl text-slate-900">
-                Field notes & experiments
+                Field notes
               </h2>
             </div>
             <Link
@@ -319,9 +317,6 @@ export default function HomePage() {
                   {post.title}
                 </h3>
                 <p className="mt-3 text-sm text-slate-600">{post.excerpt}</p>
-                <span className="mt-6 text-sm font-semibold text-[#1f403c]">
-                  Read chapter -&gt;
-                </span>
               </Link>
             ))}
           </div>
@@ -341,7 +336,7 @@ export default function HomePage() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600">
             Send a note with the decision you’re trying to improve, or ask me to sketch a
-            roadmap for a full-stack analytics revamp. I typically reply within a day or two.
+            roadmap for a full-stack analytics revamp.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
