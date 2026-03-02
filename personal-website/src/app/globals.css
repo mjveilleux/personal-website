@@ -1,0 +1,94 @@
+@import "katex/dist/katex.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sand: #f4ede4;
+  --mist: #f9f5f0;
+  --sea: #dfe9e3;
+  --pine: #1f403c;
+  --ink: #1a1f25;
+  --clay: #f2c6a0;
+}
+
+body {
+  background-color: var(--sand);
+  color: var(--ink);
+  font-family: var(--font-body), "Work Sans", system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+[data-mode="dark"] body {
+  background-color: #0b1412;
+  color: #f5f1ea;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), "Fraunces", "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+
+.hyggeligt-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.hyggeligt-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 32px;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+[data-mode="dark"] .hyggeligt-panel {
+  background: rgba(12, 18, 20, 0.88);
+  border-color: rgba(226, 232, 240, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+.gentle-float {
+  animation: floaty 12s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fade-slide {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeSlide 0.9s ease forwards;
+}
+
+@keyframes fadeSlide {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gentle-float,
+  .fade-slide {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
