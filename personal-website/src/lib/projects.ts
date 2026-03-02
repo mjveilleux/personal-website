@@ -6,34 +6,27 @@ export type FlagshipProject = {
 };
 
 export const flagshipProjects: FlagshipProject[] = [
+
+  {
+    slug: "gameplan-science",
+    title: "Gameplan Science",
+    summary:
+      "Sports analytics should be more Bayesian. Gameplan science uses Bayesian methods to recover latent team-strength parameters for offense and defense",
+    highlights: [
+      "This is a bespoke model that extends traditional Bayesian methods of team strengths. Allowing for parameterization by season-week and a team's offense and defense",
+      "It also is the first to return posterior conditional point distributions given the model parameters",
+      "This approach allows us to compare organizations across seasons and weeks to find who really had the best team."
+    ],
+  },
   {
     slug: "bid-optimizer",
-    title: "Bid optimizer for public works",
+    title: "bid.optimizer",
     summary:
-      "Combined auction theory with streaming cost data so construction teams could price bids with confidence in minutes instead of days.",
+      "Combines auction theory with bayesian decision science so construction teams could price bids with confidence in minutes instead of days.",
     highlights: [
-      "Modeled market structure + constraints, deployed as a calm API",
-      "Surfaced explainable risk envelopes for project managers",
-    ],
-  },
-  {
-    slug: "bayesian-time-series",
-    title: "Bayesian time series with missing telemetry",
-    summary:
-      "Built a hierarchical state-space model that imputed gaps and still flagged outliers in real time across 140+ sensors.",
-    highlights: [
-      "Used variational inference for near-real-time posterior updates",
-      "Delivered interactive notebooks + dashboards for ops teams",
-    ],
-  },
-  {
-    slug: "treatment-simulations",
-    title: "Treatment simulations for customer acquisition",
-    summary:
-      "Simulated policy tweaks to forecast lift while respecting budget and channel constraints, keeping leadership aligned.",
-    highlights: [
-      "Combined causal forests with Monte Carlo spend modeling",
-      "Packaged scenarios into a lightweight planning tool",
+      "Models the probability of winning a bid through experimentation",
+      "Provides uncertainty estimation according to change orders and expected estimate error",
+      "Always allowing sales teams to price each job at the profit-maximizing level"
     ],
   },
 ];

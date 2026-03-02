@@ -346,7 +346,7 @@ export default function HomePage() {
               Email Mason
             </a>
             <a
-              href="https://www.linkedin.com/in/masonveilleux"
+              href="linkedin.com/in/mason-veilleux"
               className="inline-flex items-center rounded-full border border-[#1f403c] px-8 py-3 text-sm font-semibold text-[#1f403c] transition duration-300 hover:-translate-y-0.5 hover:bg-white/70"
             >
               Connect on LinkedIn

@@ -4,7 +4,6 @@ import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import cn from "classnames";
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
-import { ThemeSwitcher } from "./_components/theme-switcher";
 
 import "./globals.css";
 
@@ -63,7 +62,6 @@ export default function RootLayout({
           "bg-[var(--sand)] text-[var(--ink)] antialiased",
         )}
       >
-        <ThemeSwitcher />
         <div className="min-h-screen hyggeligt-shell">
           <TopNav />
           {children}

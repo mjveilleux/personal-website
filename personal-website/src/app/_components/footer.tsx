@@ -1,8 +1,8 @@
 export function Footer() {
   const links = [
     { label: "Email", href: "mailto:masonjveilleux@gmail.com" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/masonveilleux" },
-    { label: "GitHub", href: "https://github.com/masonveilleux" },
+    { label: "LinkedIn", href: "linkedin.com/in/mason-veilleux" },
+    { label: "GitHub", href: "https://github.com/mjveilleux" },
   ];
 
   return (

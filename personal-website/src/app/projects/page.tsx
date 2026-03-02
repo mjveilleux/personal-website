@@ -16,9 +16,7 @@ export default function ProjectsPage() {
           Full-stack analytics in the wild.
         </h1>
         <p className="mx-auto mt-4 max-w-3xl text-base text-slate-600">
-          Every project pairs backend craftsmanship, reliable data pipelines, and
-          probabilistic models so decisions arrive with confidence intervals.
-          Below are a few favorites.
+          Below are some projects that are cooking or cooked.
         </p>
       </section>
 
@@ -44,9 +42,6 @@ export default function ProjectsPage() {
                     </li>
                   ))}
                 </ul>
-                <span className="mt-4 text-sm font-semibold text-[#1f403c]">
-                  Read build log -&gt;
-                </span>
               </div>
             </article>
           </Link>
