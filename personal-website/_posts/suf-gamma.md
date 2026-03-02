@@ -161,7 +161,7 @@ Here are the results from the simulated R code below:
 
 # Code
 
-You can check out the code on GitHub, below is how this was simulated.
+You can check out the code on GitHub, below is an excerpt.
 
 ```r
 library(cmdstanr); 
