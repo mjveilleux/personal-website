@@ -1,0 +1,214 @@
+---
+title: "blog"
+output: html_document
+date: "2026-03-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goal
+
+Simulate a cointegrated relationship between air temperature (driver) and ground temperature (response) across five sensors. Ground logs have missing values that vary by sensor to mimic faulty data loggers. The simulation follows a VECM-style error-correction process so that ground temperature tracks a long-run equilibrium with air, while short-run changes in air also affect ground.
+
+## How The Simulation Works
+
+- Air process (`A_t`): integrated AR(1) with higher variance plus mild seasonality; air varies more than ground.
+- Long-run equilibrium: `G_t` tends to `c_i + beta * A_t` with `beta < 1` so the ground amplitude is lower than air.
+- Error correction: deviation `z_{t-1} = G_{t-1} - beta * A_{t-1} - c_i` is pulled back by `alpha_i < 0` (slower correction).
+- Lagged short-run: ground responds to past air changes, `ΔA_{t-L}` (we use L = 7 days), making ground move sluggishly.
+- Heterogeneity: sensor-level random effects for `alpha_i`, `gamma_i`, and `c_i`.
+- Missingness: only ground logs are missing; each sensor gets its own missing rate, with block gaps added for the worst loggers.
+
+The data and plot are created in `script.R`.
+
+```{r simulate, message=FALSE, warning=FALSE}
+source("script.R")
+```
+
+### Missingness By Sensor
+
+```{r miss-table, echo=FALSE}
+library(dplyr)
+library(knitr)
+sim %>%
+  group_by(sensor) %>%
+  summarize(miss_rate = mean(is.na(ground_obs))) %>%
+  knitr::kable(digits = 2, caption = "Share of missing ground observations by sensor")
+```
+
+## Visual Check
+
+The plot below shows complete air (blue) and observed ground (red) per sensor. Ground has lower amplitude, higher inertia, and lags behind air; better sensors have fewer gaps.
+
+```{r plot, echo=FALSE, fig.width=8, fig.height=10, message=FALSE, warning=FALSE}
+p
+```
+
+## Stan Model (Imputation)
+
+We fit a hierarchical error-correction (VECM-style) state-space model in Stan to impute missing ground temperatures and quantify uncertainty. Air temperature is treated as a known covariate.
+
+### Model Specification
+
+Let sensors `i = 1, ..., S` and times `t = 1, ..., T`. Air temperature is `A_t` and its change is `\Delta A_t = A_t - A_{t-1}`.
+
+- Cointegrating equilibrium per sensor:
+
+$$G^*_{t,i} = c_i + (\beta_0 + \beta_i)\,A_t$$
+
+- Error-correction term:
+
+$$z_{t-1,i} = G_{t-1,i} - (\beta_0 + \beta_i)\,A_{t-1} - c_i$$
+
+- State evolution (short-run dynamics are contemporaneous in the Stan model):
+
+$$G_{t,i} = G_{t-1,i} + \alpha_i\,z_{t-1,i} + \gamma_i\,\Delta A_t + \varepsilon_{t,i}$$
+
+equivalently
+
+$$\Delta G_{t,i} = \alpha_i\,z_{t-1,i} + \gamma_i\,\Delta A_t + \varepsilon_{t,i},\quad \varepsilon_{t,i} \sim \mathcal{N}(0,\sigma_{\text{eps}})$$
+
+- Initial state prior (sub-zero starts):
+
+$$G_{1,i} \sim \mathcal{N}(\mu^{(G1)}_i,\,\sigma_{\text{init}}),\quad \mu^{(G1)}_i \sim \mathcal{N}(-5,\,3)$$
+
+- Hierarchical priors for sensor effects and hyperparameters:
+
+$$\alpha_i \sim \mathcal{N}(\mu_\alpha,\,\sigma_\alpha),\qquad \gamma_i \sim \mathcal{N}(\mu_\gamma,\,\sigma_\gamma),\qquad c_i \sim \mathcal{N}(\mu_c,\,\sigma_c)$$
+
+$$\mu_\alpha \sim \mathcal{N}(-0.3,0.3),\quad \mu_\gamma \sim \mathcal{N}(0.6,0.3),\quad \mu_c \sim \mathcal{N}(0,2)$$
+
+Partial pooling for cointegration slope:
+
+$$\beta_0 \sim \mathcal{N}(0.8,0.2),\qquad \beta_i \sim \mathcal{N}(0,\,\sigma_\beta),\qquad \sigma_\beta \sim \text{Exponential}(1)$$
+
+$$\sigma_\alpha,\sigma_\gamma,\sigma_c,\sigma_{\text{init}},\sigma_{\text{eps}},\sigma_{\text{obs}} \sim \text{Exponential}(1)$$
+
+- Observation model (known indexes `(t_n, i_n)` for observed entries `n = 1, ..., N_{\text{obs}}`):
+
+$$y^{\text{obs}}_n \sim \mathcal{N}(\,G_{t_n,i_n},\,\sigma_{\text{obs}}\,)$$
+
+- Missing data (Stan slicing; unknowns `y^{\text{mis}}_m` for missing indexes `(\tau_m, j_m)`, `m = 1, ..., N_{\text{mis}}`):
+
+$$y^{\text{mis}}_m \sim \mathcal{N}(\,G_{\tau_m,j_m},\,\sigma_{\text{obs}}\,)$$
+
+This follows Stan’s recommended pattern: observed and missing outcomes are split and modeled separately, with missing outcomes declared as parameters. Air `A_t` and `\Delta A_t` are treated as known covariates.
+
+Note: Our simulation uses a 7-day lag for short-run effects (`\Delta A_{t-7}`) to make ground respond more slowly. The current Stan fit uses contemporaneous `\Delta A_t`. If desired, we can replace `\Delta A_t` with `\Delta A_{t-L}` to mirror the simulation.
+
+```{r stan-fit, message=FALSE, warning=FALSE, results='hide'}
+library(cmdstanr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# prepare indices for observations
+sensors <- unique(sim$sensor)
+sensor_index <- setNames(seq_along(sensors), sensors)
+
+T_ <- max(sim$t)
+S_ <- length(sensors)
+
+air_ts <- sim %>%
+  filter(sensor == sensors[1]) %>%
+  arrange(t) %>%
+  pull(air)
+
+dA_ts <- sim %>%
+  filter(sensor == sensors[1]) %>%
+  arrange(t) %>%
+  pull(dA)
+
+obs_df <- sim %>%
+  filter(!is.na(ground_obs)) %>%
+  mutate(i = sensor_index[sensor]) %>%
+  select(t, i, y = ground_obs) %>%
+  arrange(i, t)
+
+mis_df <- sim %>%
+  filter(is.na(ground_obs)) %>%
+  mutate(i = sensor_index[sensor]) %>%
+  select(t, i) %>%
+  arrange(i, t)
+
+stan_data <- list(
+  T = T_, S = S_, A = air_ts, dA = dA_ts,
+  N_obs = nrow(obs_df),
+  obs_t = obs_df$t,
+  obs_i = obs_df$i,
+  y_obs = obs_df$y,
+  N_mis = nrow(mis_df),
+  mis_t = if (nrow(mis_df) > 0) mis_df$t else integer(0),
+  mis_i = if (nrow(mis_df) > 0) mis_df$i else integer(0)
+)
+
+mod <- cmdstan_model("vecm_partial_pooling.stan")
+fit <- mod$sample(
+  data = stan_data,
+  seed = 100,
+  
+  chains = 1, parallel_chains = 4,
+  iter_warmup = 800, iter_sampling = 800,
+  adapt_delta = 0.9
+)
+
+# summarize latent ground G[t,i]
+sum_G <- fit$summary(variables = c("G"))
+sum_G <- sum_G %>%
+  select(variable, mean, sd) %>%
+  mutate(idx = str_match(variable, "G\\[(\\d+),(\\d+)\\]")) %>%
+  mutate(t = as.integer(idx[,2]), i = as.integer(idx[,3])) %>%
+  select(t, i, ground_mean = mean, ground_sd = sd)
+
+imputed <- tidyr::expand_grid(t = 1:T_, i = 1:S_) %>%
+  left_join(sum_G, by = c("t","i")) %>%
+  mutate(sensor = names(sensor_index)[i]) %>%
+  select(t, sensor, ground_mean, ground_sd)
+```
+
+### Plot With Imputations
+
+The plot overlays the posterior mean ground temperature and highlights uncertainty (±2 SD) at time points where ground data were missing.
+
+```{r imputed-plot, echo=FALSE, fig.width=8, fig.height=11, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+plot_df <- sim %>%
+  left_join(imputed, by = c("t","sensor")) %>%
+  mutate(is_missing = is.na(ground_obs))
+
+gg <- ggplot() +
+  geom_line(data = plot_df, aes(t, air, color = "Air"), linewidth = 0.5) +
+  geom_line(data = plot_df, aes(t, ground_obs, color = "Ground (obs)"), linewidth = 0.5, na.rm = TRUE) +
+  geom_line(data = plot_df, aes(t, ground_mean, color = "Ground (mean)"), linewidth = 0.6, alpha = 0.9) +
+  geom_linerange(
+    data = dplyr::filter(plot_df, is_missing),
+    aes(x = t, ymin = ground_mean - 2 * ground_sd, ymax = ground_mean + 2 * ground_sd, color = "Imputed ±2 SD"),
+    alpha = 0.7,
+    linewidth = 0.7
+  ) +
+  facet_wrap(~ sensor, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("Air" = "#1f77b4", "Ground (obs)" = "#d62728", "Ground (mean)" = "#8c1515", "Imputed ±2 SD" = "#d62728"), name = NULL) +
+  labs(title = "Air vs Ground (Observed and Imputed)", x = "Time", y = "Temperature") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+
+gg
+```
+
+```{r save-plots, echo=FALSE, message=FALSE, warning=FALSE}
+# Save both the simulated and imputed plots to the project public path
+output_dir <- file.path("..", "..", "..", "public", "blogs", "2026-03-04-spring-thaw")
+if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
+ggsave(filename = file.path(output_dir, "simulated-ground-air.png"), plot = p, width = 8, height = 10, dpi = 120)
+ggsave(filename = file.path(output_dir, "imputed-ground-air.png"), plot = gg, width = 8, height = 11, dpi = 120)
+```
+
+## Notes
+
+- Sensors start below 0°C in the simulation; the Stan model also places a prior for sub-zero initial states.
+- Missing data are handled per Stan's recommendations by separating observed and missing indices and introducing `y_mis` as parameters linked to the latent state.
+- The tibble `sim` has: `t`, `sensor`, `air`, `dA`, `ground_true`, `ground_obs`. The `imputed` tibble adds `ground_mean`, `ground_sd` from the posterior.
