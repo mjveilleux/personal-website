@@ -24,24 +24,35 @@ sd_eps    <- 0.25    # ground innovation sd (lower than air)
 mu_c      <- 0.0     # sensor intercepts
 sd_c      <- 1.0
 
-# air process: integrated with AR(1) increments + mild seasonality (higher variance)
-phi        <- 0.6
-sd_eta     <- 1.2
-season_amp <- 10
+## air process: per-sensor integrated AR(1) increments + mild seasonality
+## introduce small heterogeneity in AR and variance per sensor
+phi_base        <- 0.6
+sd_eta_base     <- 1.2
+season_amp_base <- 10
 
-dA <- numeric(T)
-A  <- numeric(T)
-A[1] <- 0
-dA[1] <- rnorm(1, 0, sd_eta)
-for (t in 2:T) {
-  dA[t] <- phi * dA[t - 1] + rnorm(1, 0, sd_eta)
-  A[t]  <- A[t - 1] + dA[t]
+A_mat  <- matrix(0, nrow = T, ncol = S)
+dA_mat <- matrix(0, nrow = T, ncol = S)
+for (i in 1:S) {
+  phi_i    <- pmin(0.9, pmax(0.3, rnorm(1, phi_base, 0.05)))
+  sd_eta_i <- pmax(0.6, rnorm(1, sd_eta_base, 0.2))
+  amp_i    <- pmax(5, rnorm(1, season_amp_base, 2))
+
+  dA_i <- numeric(T)
+  A_i  <- numeric(T)
+  A_i[1] <- rnorm(1, 0, 1)
+  dA_i[1] <- rnorm(1, 0, sd_eta_i)
+  for (t in 2:T) {
+    dA_i[t] <- phi_i * dA_i[t - 1] + rnorm(1, 0, sd_eta_i)
+    A_i[t]  <- A_i[t - 1] + dA_i[t]
+  }
+  A_i <- A_i + amp_i * sin(2 * pi * (1:T) / 365)
+  A_mat[, i]  <- A_i
+  dA_mat[, i] <- dA_i
 }
-A <- A + season_amp * sin(2 * pi * (1:T) / 365)
 
-# introduce a lag so ground responds to prior changes in air
+# introduce a lag so ground responds to prior changes in air (per sensor)
 lag_L <- 7
-dA_lag <- c(rep(0, lag_L), dA[1:(T - lag_L)])
+dA_lag_mat <- rbind(matrix(0, nrow = lag_L, ncol = S), dA_mat[1:(T - lag_L), ])
 
 # sensor parameters (partial pooling draw)
 alpha <- rnorm(S, mu_alpha, sd_alpha)
@@ -56,8 +67,8 @@ start_temp <- runif(S, -10, -1)
 G[1, ] <- start_temp
 for (t in 2:T) {
   for (i in 1:S) {
-    z_lag <- G[t - 1, i] - beta * A[t - 1] - c_i[i]
-    dG_t  <- alpha[i] * z_lag + gamma[i] * dA_lag[t] + rnorm(1, 0, sd_eps)
+    z_lag <- G[t - 1, i] - beta * A_mat[t - 1, i] - c_i[i]
+    dG_t  <- alpha[i] * z_lag + gamma[i] * dA_lag_mat[t, i] + rnorm(1, 0, sd_eps)
     G[t, i] <- G[t - 1, i] + dG_t
   }
 }
@@ -67,8 +78,8 @@ sim <- bind_rows(lapply(1:S, function(i) {
   tibble(
     t = 1:T,
     sensor = sensor_ids[i],
-    air = A,
-    dA = dA,
+    air = A_mat[, i],
+    dA = dA_mat[, i],
     ground_true = G[, i]
   )
 }))
@@ -115,12 +126,12 @@ p <- sim %>%
   theme(legend.position = "top")
 
 # ---- Export ----
-# Save plot and data to project public path
-output_dir <- file.path("..", "..", "..", "public", "blogs", "2026-03-04-spring-thaw")
+# Save plot and data to website assets path used by post
+output_dir <- file.path("..", "..", "personal-website", "public", "assets", "blog")
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-ggsave(filename = file.path(output_dir, "simulated-ground-air.png"), plot = p, width = 8, height = 10, dpi = 120)
-utils::write.csv(sim, file.path(output_dir, "sim.csv"), row.names = FALSE)
+ggsave(filename = file.path(output_dir, "spring-thaw-simulated-ground-air.png"), plot = p, width = 8, height = 10, dpi = 120)
+utils::write.csv(sim, file.path(output_dir, "spring-thaw-sim.csv"), row.names = FALSE)
 
 # run stan model (intentionally left blank)
 

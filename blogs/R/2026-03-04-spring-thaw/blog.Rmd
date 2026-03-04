@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Goal
 
-Simulate a cointegrated relationship between air temperature (driver) and ground temperature (response) across five sensors. Ground logs have missing values that vary by sensor to mimic faulty data loggers. The simulation follows a VECM-style error-correction process so that ground temperature tracks a long-run equilibrium with air, while short-run changes in air also affect ground.
+Simulate a cointegrated relationship between air temperature (driver) and ground temperature (response) across five sensors. Air temperature time series are different for each sensor (local variability and seasonality), and ground logs have missing values that vary by sensor to mimic faulty data loggers. The simulation follows a VECM-style error-correction process so that ground temperature tracks a long-run equilibrium with air, while short-run changes in air also affect ground.
 
 ## How The Simulation Works
 
-- Air process (`A_t`): integrated AR(1) with higher variance plus mild seasonality; air varies more than ground.
+- Air process (`A_{t,i}`): per-sensor integrated AR(1) with mild seasonality and sensor-specific variance/AR parameter; air varies more than ground and differs by location.
 - Long-run equilibrium: `G_t` tends to `c_i + beta * A_t` with `beta < 1` so the ground amplitude is lower than air.
 - Error correction: deviation `z_{t-1} = G_{t-1} - beta * A_{t-1} - c_i` is pulled back by `alpha_i < 0` (slower correction).
 - Lagged short-run: ground responds to past air changes, `ΔA_{t-L}` (we use L = 7 days), making ground move sluggishly.
@@ -96,7 +96,7 @@ $$y^{\text{mis}}_m \sim \mathcal{N}(\,G_{\tau_m,j_m},\,\sigma_{\text{obs}}\,)$$
 
 This follows Stan’s recommended pattern: observed and missing outcomes are split and modeled separately, with missing outcomes declared as parameters. Air `A_t` and `\Delta A_t` are treated as known covariates.
 
-Note: Our simulation uses a 7-day lag for short-run effects (`\Delta A_{t-7}`) to make ground respond more slowly. The current Stan fit uses contemporaneous `\Delta A_t`. If desired, we can replace `\Delta A_t` with `\Delta A_{t-L}` to mirror the simulation.
+Note: Our simulation uses a 7-day lag for short-run effects (`\Delta A_{t-7,i}`) to make ground respond more slowly. The Stan fit uses contemporaneous `\Delta A_{t,i}`; swapping to a lagged `\Delta A_{t-L,i}` is straightforward.
 
 ```{r stan-fit, message=FALSE, warning=FALSE, results='hide'}
 library(cmdstanr)
@@ -111,15 +111,12 @@ sensor_index <- setNames(seq_along(sensors), sensors)
 T_ <- max(sim$t)
 S_ <- length(sensors)
 
-air_ts <- sim %>%
-  filter(sensor == sensors[1]) %>%
-  arrange(t) %>%
-  pull(air)
+# build T x S matrices for air and its change (per sensor)
+air_wide <- sim %>% select(t, sensor, air) %>% tidyr::pivot_wider(names_from = sensor, values_from = air) %>% arrange(t)
+dA_wide  <- sim %>% select(t, sensor, dA)  %>% tidyr::pivot_wider(names_from = sensor, values_from = dA)  %>% arrange(t)
 
-dA_ts <- sim %>%
-  filter(sensor == sensors[1]) %>%
-  arrange(t) %>%
-  pull(dA)
+A_mat <- as.matrix(air_wide[ , setdiff(names(air_wide), "t")])
+dA_mat <- as.matrix(dA_wide[ , setdiff(names(dA_wide), "t")])
 
 obs_df <- sim %>%
   filter(!is.na(ground_obs)) %>%
@@ -134,7 +131,7 @@ mis_df <- sim %>%
   arrange(i, t)
 
 stan_data <- list(
-  T = T_, S = S_, A = air_ts, dA = dA_ts,
+  T = T_, S = S_, A = A_mat, dA = dA_mat,
   N_obs = nrow(obs_df),
   obs_t = obs_df$t,
   obs_i = obs_df$i,
@@ -199,12 +196,12 @@ gg
 ```
 
 ```{r save-plots, echo=FALSE, message=FALSE, warning=FALSE}
-# Save both the simulated and imputed plots to the project public path
-output_dir <- file.path("..", "..", "..", "public", "blogs", "2026-03-04-spring-thaw")
+# Save plots to the website assets path (used by the published post)
+output_dir <- file.path("..", "..", "personal-website", "public", "assets", "blog")
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-ggsave(filename = file.path(output_dir, "simulated-ground-air.png"), plot = p, width = 8, height = 10, dpi = 120)
-ggsave(filename = file.path(output_dir, "imputed-ground-air.png"), plot = gg, width = 8, height = 11, dpi = 120)
+ggsave(filename = file.path(output_dir, "spring-thaw-simulated-ground-air.png"), plot = p, width = 8, height = 10, dpi = 120)
+ggsave(filename = file.path(output_dir, "spring-thaw-imputed-ground-air.png"), plot = gg, width = 8, height = 11, dpi = 120)
 ```
 
 ## Notes

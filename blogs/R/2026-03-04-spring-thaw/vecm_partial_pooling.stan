@@ -1,8 +1,8 @@
 data {
   int<lower=1> T;
   int<lower=1> S;
-  vector[T] A;           // air level
-  vector[T] dA;          // air change
+  matrix[T, S] A;        // air level per sensor
+  matrix[T, S] dA;       // air change per sensor
   int<lower=0> N_obs;    // number of observed ground points
   array[N_obs] int<lower=1, upper=T> obs_t;
   array[N_obs] int<lower=1, upper=S> obs_i;
@@ -72,8 +72,8 @@ model {
   for (t in 2:T) {
     for (i in 1:S) {
       real beta_i = beta0 + beta_dev[i];
-      real z_lag = G[t - 1, i] - beta_i * A[t - 1] - c[i];
-      target += normal_lpdf(G[t, i] | G[t - 1, i] + alpha[i] * z_lag + gamma[i] * dA[t], sigma_eps);
+      real z_lag = G[t - 1, i] - beta_i * A[t - 1, i] - c[i];
+      target += normal_lpdf(G[t, i] | G[t - 1, i] + alpha[i] * z_lag + gamma[i] * dA[t, i], sigma_eps);
     }
   }
 

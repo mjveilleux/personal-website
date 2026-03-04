@@ -72,7 +72,7 @@ Badda-bing. Badda-boom.
 
 The above is a simplification of the challenge in modeling but it's a good starting point for cases where:
 
-- we need to relax assumptions for the case of spotty air temperature data
+- we need to relax assumptions for the case of spotty air temperature data. We could even have co-integration or partial-pooling across location air-temperature.
 - Temperature variance varies across sensors / regions.
 - We need to forecast using the best known air temperature forecast. We could also add posterior uncertainty for forecast error
 - Add probability of unsafe conditions in the forecasts by ${i,t}$ (the Tundra threshold is often: -5C (27F) at 0.3 meters (1 foot))
