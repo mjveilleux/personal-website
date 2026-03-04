@@ -4,6 +4,7 @@ import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import cn from "classnames";
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css";
 
