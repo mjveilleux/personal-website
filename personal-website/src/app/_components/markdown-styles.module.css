@@ -9,6 +9,20 @@
   @apply my-6;
 }
 
+/* Lists */
+.markdown ul {
+  /* Tailwind preflight removes bullets; restore them */
+  @apply list-disc pl-6;
+}
+
+.markdown ol {
+  @apply list-decimal pl-6;
+}
+
+.markdown li {
+  @apply my-1;
+}
+
 .markdown h2 {
   @apply text-3xl mt-12 mb-4 leading-snug;
 }
