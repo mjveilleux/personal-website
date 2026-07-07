@@ -118,14 +118,14 @@ export default function HomePage() {
 {/* I'm most excited about how AI can be used by humans to do increasingly ambitious feats. The diagram above, Koestler's by way of Alan Kay, frames a crossroads during a major technological advance: you can automate the old or leverage the new. I seek work that enables me to leverage the new. Where will this new technology take us? */}
 
       <p className="text-base leading-relaxed text-slate-800 sm:text-[15px]">
-        <strong>I design and build machine learning and AI
+        <strong className="font-semibold text-[#1f403c]">I design and build machine learning and AI
         pipelines for optimizing decisions under uncertainty.</strong> I care most about ones that are transparent, trustworthy, and give decision-makers the confidence they need.    </p>
 
-{/*  some cool svg here */}
-
+    <p className="mb-10">
+      </p>
 
       <p className="text-base leading-relaxed text-slate-800 sm:text-[15px]">
-        <strong>I am most excited about</strong> building and deploying statistical models to optimize decision-making alongside fostering a culture of trust and empowerment with data.</p>
+        <strong className="font-semibold text-[#1f403c]">I am most excited about</strong> building and deploying statistical models to optimize decision-making alongside fostering a culture of trust and empowerment with data.</p>
 
 
       {/* Selected Work */}
