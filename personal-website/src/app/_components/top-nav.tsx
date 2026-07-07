@@ -13,7 +13,7 @@ const links = [
 const VennGlyph = () => (
   <svg
     viewBox="0 0 60 32"
-    className="h-8 w-14 text-[#1f403c]"
+    className="hidden sm:block h-8 w-14 text-[#1f403c]"
     aria-hidden
   >
     <g opacity="0.7">
@@ -29,7 +29,7 @@ export function TopNav() {
 
   return (
     <header className="sticky top-0 z-20 mx-auto mt-6 w-full max-w-6xl px-4">
-      <nav className="hyggeligt-panel flex items-center justify-between rounded-full px-6 py-3 text-sm">
+      <nav className="hyggeligt-panel flex items-center justify-between rounded-full px-4 sm:px-6 py-3 text-sm">
         <div className="flex items-center gap-3">
           <VennGlyph />
           <div>
@@ -39,7 +39,7 @@ export function TopNav() {
             >
               Mason Veilleux
             </Link>
-            <p className="text-xs uppercase tracking-[0.5em] text-slate-500">
+            <p className="hidden sm:block text-xs uppercase tracking-[0.5em] text-slate-500">
               Full-stack analytics
             </p>
           </div>
@@ -55,7 +55,7 @@ export function TopNav() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-full px-4 py-2 font-medium transition duration-200",
+                  "rounded-full px-3 sm:px-4 py-2 font-medium transition duration-200",
                   active
                     ? "bg-[#26443b] text-white shadow-md"
                     : "text-[#1f403c] hover:bg-[#e9dfd3]",

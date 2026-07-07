@@ -1,5 +1,4 @@
 import Footer from "@/app/_components/footer";
-import { TopNav } from "@/app/_components/top-nav";
 import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import cn from "classnames";
 import type { Metadata } from "next";
@@ -63,8 +62,7 @@ export default function RootLayout({
           "bg-[var(--sand)] text-[var(--ink)] antialiased",
         )}
       >
-        <div className="min-h-screen hyggeligt-shell">
-          <TopNav />
+        <div className="min-h-screen">
           {children}
         </div>
         <Footer />

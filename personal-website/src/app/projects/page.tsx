@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { flagshipProjects } from "@/lib/projects";
 
+
 export const metadata = {
   title: "Projects | Mason Veilleux",
   description:
@@ -9,57 +10,52 @@ export const metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main className="relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-20">
-      <section className="hyggeligt-panel px-8 py-12 text-center">
-        <p className="text-sm uppercase tracking-[0.4em] text-slate-500">Projects</p>
-        <h1 className="mt-4 font-display text-5xl text-slate-900">
+    <main className="mx-auto max-w-2xl px-6 pb-24 pt-10 sm:pt-14">
+      <Link href="/" className="text-[13px] text-slate-400 hover:text-slate-600 transition-colors">
+        ← Mason Veilleux
+      </Link>
+      <div className="mt-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Projects</p>
+        <h1 className="mt-3 font-display text-2xl sm:text-4xl text-slate-900">
           Full-stack analytics in the wild.
         </h1>
-        <p className="mx-auto mt-4 max-w-3xl text-base text-slate-600">
-          Below are some projects that are cooking or cooked.
-        </p>
-      </section>
+      </div>
 
-      <section className="mt-16 space-y-8">
-        {flagshipProjects.map((project, index) => (
+      <section className="mt-10 space-y-7">
+        {flagshipProjects.map((project) => (
           <Link
             key={project.title}
             href={`/posts/${project.slug}`}
-            className="block fade-slide"
-            style={{ animationDelay: `${index * 120}ms` }}
+            className="group block rounded-md px-2 py-2 -mx-2 transition-colors hover:bg-black/[0.03]"
           >
-            <article className="hyggeligt-panel px-6 py-6 transition duration-300 hover:-translate-y-1">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-display text-3xl text-[#1f403c]">
-                  {project.title}
-                </h2>
-                <p className="text-sm text-slate-600">{project.summary}</p>
-                <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  {project.highlights.map((item) => (
-                    <li key={item} className="flex gap-3">
-                      <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-[#26443b]" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
+            <div className="flex items-baseline gap-2">
+              <h2 className="font-medium text-[#1f403c] text-[15px] group-hover:underline underline-offset-4">
+                {project.title}
+              </h2>
+            </div>
+            <p className="mt-1 text-[13px] text-slate-500">{project.summary}</p>
+            <ul className="mt-2 space-y-1">
+              {project.highlights.map((item) => (
+                <li key={item} className="flex gap-2 text-[13px] text-slate-400">
+                  <span className="shrink-0 text-slate-300">—</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </Link>
         ))}
       </section>
 
-      <section className="mt-16 text-center">
-        <p className="text-base text-slate-600">
-          Want to explore a similar build? Email
-          <a
-            href="mailto:masonjveilleux@gmail.com"
-            className="ml-2 font-semibold text-[#1f403c] underline-offset-4 hover:underline"
-          >
-            masonjveilleux@gmail.com
-          </a>
-          and share the decision you’re trying to accelerate.
-        </p>
-      </section>
+      <p className="mt-12 text-[13px] text-slate-500">
+        Want to explore a similar build?{" "}
+        <a
+          href="mailto:masonjveilleux@gmail.com"
+          className="font-medium text-[#1f403c] underline-offset-4 hover:underline"
+        >
+          Email me
+        </a>
+        {" "}and share the problem you’re working on.
+      </p>
     </main>
   );
 }

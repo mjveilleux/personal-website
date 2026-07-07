@@ -24,53 +24,37 @@ export default function WritingsPage() {
   ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
   return (
-    <main className="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-16">
-      <div className="hyggeligt-panel px-8 py-12 text-center">
-        <p className="text-sm uppercase tracking-[0.4em] text-slate-500">Writings</p>
-        <h1 className="mt-4 font-display text-5xl text-slate-900">
+    <main className="mx-auto max-w-2xl px-6 pb-24 pt-10 sm:pt-14">
+      <Link href="/" className="text-[13px] text-slate-400 hover:text-slate-600 transition-colors">
+        ← Mason Veilleux
+      </Link>
+      <div className="mt-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Writings</p>
+        <h1 className="mt-3 font-display text-2xl sm:text-4xl text-slate-900">
           Dispatches from head banging.
         </h1>
       </div>
 
-      {tags.length > 0 && (
-        <section className="mt-12">
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">
-            Tag index
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-white/80 px-4 py-2 text-sm font-medium text-[#1f403c] shadow-inner"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
 
-      <section className="mt-16 space-y-4">
+<section className="mt-10 space-y-6">
         {posts.map((post) => (
           <Link
             key={post.slug}
             href={`/posts/${post.slug}`}
-            className="hyggeligt-panel flex flex-col gap-3 px-6 py-5 transition duration-300 hover:-translate-y-1"
+            className="group block rounded-md px-2 py-2 -mx-2 transition-colors hover:bg-black/[0.03]"
           >
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-display text-2xl text-slate-900">
+            <div className="flex items-baseline gap-2">
+              <h2 className="font-medium text-[#1f403c] text-[15px] group-hover:underline underline-offset-4">
                 {post.title}
               </h2>
-              <p className="text-sm text-slate-500">{formatDate(post.date)}</p>
+              <span className="flex-1 border-b border-dotted border-slate-200" aria-hidden />
+              <p className="shrink-0 tabular-nums text-[12px] text-slate-400">{formatDate(post.date)}</p>
             </div>
-            <p className="text-sm text-slate-600">{post.excerpt}</p>
+            <p className="mt-1 text-[13px] text-slate-500">{post.excerpt}</p>
             {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-[#d9cec0] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#1f403c]"
-                  >
+                  <span key={tag} className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
                     {tag}
                   </span>
                 ))}
