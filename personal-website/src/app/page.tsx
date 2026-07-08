@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/api";
+import PlumberAnimation from "@/app/_components/plumber-animation";
 
 const workExperience = [
   {
@@ -75,8 +76,8 @@ export default function HomePage() {
     <main className="mx-auto max-w-2xl px-6 pb-32 pt-14 sm:pt-20">
 
       <header className="mb-10">
-        <h1 className="text-xl font-bold text-[#1a1f25]">Mason Veilleux</h1>
-        <p className="mt-1.5 text-slate-500">Building Machine Learning and AI pipelines</p>
+        <h1 className="text-3xl font-bold text-[#1a1f25] sm:text-xl">Mason Veilleux</h1>
+        <p className="mt-1.5 text-lg text-slate-500 sm:text-base">Building Machine Learning and AI pipelines</p>
         <div className="mt-3 flex items-center gap-4 text-slate-400">
           <a
             href="https://github.com/mjveilleux"
@@ -117,21 +118,20 @@ export default function HomePage() {
 {/* I design and build tools for data analysis, deep work, and decision-making. I care most about ones that enable flow, creativity, and a clearer understanding of the world. */}
 {/* I'm most excited about how AI can be used by humans to do increasingly ambitious feats. The diagram above, Koestler's by way of Alan Kay, frames a crossroads during a major technological advance: you can automate the old or leverage the new. I seek work that enables me to leverage the new. Where will this new technology take us? */}
 
-      <p className="text-base leading-relaxed text-slate-800 sm:text-[15px]">
+      <p className="text-lg leading-relaxed text-slate-800 sm:text-[15px]">
         <strong className="font-semibold text-[#1f403c]">I design and build machine learning and AI
         pipelines for optimizing decisions under uncertainty.</strong> I care most about ones that are transparent, trustworthy, and give decision-makers the confidence they need.    </p>
 
-    <p className="mb-10">
-      </p>
+    <PlumberAnimation />
 
-      <p className="text-base leading-relaxed text-slate-800 sm:text-[15px]">
+      <p className="text-lg leading-relaxed text-slate-800 sm:text-[15px]">
         <strong className="font-semibold text-[#1f403c]">I am most excited about</strong> building and deploying statistical models to optimize decision-making alongside fostering a culture of trust and empowerment with data.</p>
 
 
       {/* Selected Work */}
       <section className="mt-12 border-t border-slate-200 pt-8">
         <div className="mb-5 flex items-baseline gap-3">
-          <p className="whitespace-nowrap text-[13px] font-semibold text-slate-400">
+          <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
             Selected work
           </p>
           <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
@@ -139,11 +139,11 @@ export default function HomePage() {
         <div className="space-y-5">
           {workExperience.map((job) => (
             <div key={`${job.role}-${job.company}`} className="rounded-md px-2 py-1 -mx-2">
-              <span className="font-medium text-[#1f403c] text-[13px]">{job.role}</span>
-              <div className="mt-0.5 text-[12px] text-slate-500">
+              <span className="font-medium text-[#1f403c] text-base sm:text-[13px]">{job.role}</span>
+              <div className="mt-0.5 text-sm text-slate-500 sm:text-[12px]">
                 {job.company} · {job.type}
               </div>
-              <p className="text-[12px] text-slate-400">{job.location}</p>
+              <p className="text-sm text-slate-400 sm:text-[12px]">{job.location}</p>
             </div>
           ))}
         </div>
@@ -152,7 +152,7 @@ export default function HomePage() {
       {/* Recent Projects */}
       <section className="mt-12 border-t border-slate-200 pt-8">
         <div className="mb-5 flex items-baseline gap-3">
-          <p className="whitespace-nowrap text-[13px] font-semibold text-slate-400">
+          <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
             Recent projects
           </p>
           <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
@@ -171,7 +171,7 @@ export default function HomePage() {
                   {item.title}
                 </span>
               </div>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">
+              <p className="mt-1.5 text-base leading-relaxed text-slate-500 sm:text-[13px]">
                 {item.description}
               </p>
             </a>
@@ -182,14 +182,14 @@ export default function HomePage() {
       {/* Things that inspire me */}
       <section className="mt-12 border-t border-slate-200 pt-8">
         <div className="mb-5 flex items-baseline gap-3">
-          <p className="whitespace-nowrap text-[13px] font-semibold text-slate-400">
+          <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
             Things that inspire me
           </p>
           <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
         </div>
         <ul className="space-y-4">
           {inspiredBy.map((item) => (
-            <li key={item.title} className="flex gap-3 text-[13px]">
+            <li key={item.title} className="flex gap-3 text-base sm:text-[13px]">
               <span className="mt-1 shrink-0 text-slate-300">—</span>
               <div>
                 <a
@@ -211,7 +211,7 @@ export default function HomePage() {
       {recentPosts.length > 0 && (
         <section className="mt-12 border-t border-slate-200 pt-8">
           <div className="mb-5 flex items-baseline gap-3">
-            <p className="whitespace-nowrap text-[13px] font-semibold text-slate-400">
+            <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
               Recent writing
             </p>
             <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
@@ -223,11 +223,11 @@ export default function HomePage() {
                   href={`/posts/${post.slug}`}
                   className="group flex items-baseline gap-2 rounded-md px-2 py-1 -mx-2 transition-colors hover:bg-black/[0.03]"
                 >
-                  <span className="font-medium text-[#1f403c] group-hover:underline underline-offset-4 text-[13px]">
+                  <span className="font-medium text-[#1f403c] group-hover:underline underline-offset-4 text-base sm:text-[13px]">
                     {post.title}
                   </span>
                 </Link>
-                <p className="mt-0.5 px-2 text-[13px] text-slate-500">{post.excerpt}</p>
+                <p className="mt-0.5 px-2 text-base text-slate-500 sm:text-[13px]">{post.excerpt}</p>
               </li>
             ))}
           </ul>
@@ -236,7 +236,7 @@ export default function HomePage() {
 
       {/* Footer links */}
       <section className="mt-12 border-t border-slate-200 pt-8">
-        <p className="text-[13px] leading-relaxed text-slate-500">
+        <p className="text-base leading-relaxed text-slate-500 sm:text-[13px]">
           You can find more in my{" "}
           <Link
             href="/projects"

@@ -1,0 +1,417 @@
+.scene {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Ground */
+.ground {
+  stroke: #1f403c;
+  opacity: 0.25;
+}
+
+.shadow {
+  fill: #1a1f25;
+  opacity: 0.12;
+}
+
+/* ---- Plumber ---- */
+.plumberWalk {
+  transform-box: fill-box;
+  transform-origin: 0 0;
+  animation: walk 16s ease-in-out infinite;
+}
+
+/*
+Storyboard (16s loop, percentages of total duration):
+  0-6%     walk from the pipe stack to pipe 1's spot, carrying a pipe
+  6-10.5%  lay + connect pipe 1 (wrench wiggle)
+  10.5-15% walk back to the stack
+  15-21%   walk to pipe 2's spot
+  21-25.5% lay + connect pipe 2
+  25.5-30% walk back to the stack
+  30-36%   walk to pipe 3's spot
+  36-40.5% lay + connect pipe 3
+  40.5-45% walk back to the stack
+  45-51%   walk to pipe 4's spot
+  51-55.5% lay + connect pipe 4
+  55.5-60% walk to the monitoring station
+  60-65%   stand at the station, watching it
+  65-72.5% walk back to check on pipe 3
+  72.5-73.25% quick tap/inspection
+  73.25-77.5% walk back to the station
+  77.5-99% stand at the station, watching it
+  99-100%  fade out / reset for the next loop
+*/
+@keyframes walk {
+  0% {
+    transform: translate(34px, 122px);
+    opacity: 0;
+  }
+  1.5% {
+    transform: translate(34px, 122px);
+    opacity: 1;
+  }
+  6% {
+    transform: translate(120px, 122px);
+  }
+  10.5% {
+    transform: translate(120px, 122px);
+  }
+  15% {
+    transform: translate(34px, 122px);
+  }
+  21% {
+    transform: translate(185px, 122px);
+  }
+  25.5% {
+    transform: translate(185px, 122px);
+  }
+  30% {
+    transform: translate(34px, 122px);
+  }
+  36% {
+    transform: translate(250px, 122px);
+  }
+  40.5% {
+    transform: translate(250px, 122px);
+  }
+  45% {
+    transform: translate(34px, 122px);
+  }
+  51% {
+    transform: translate(315px, 122px);
+  }
+  55.5% {
+    transform: translate(315px, 122px);
+  }
+  60% {
+    transform: translate(340px, 122px);
+  }
+  65% {
+    transform: translate(250px, 122px);
+  }
+  72.5% {
+    transform: translate(250px, 122px);
+  }
+  77.5% {
+    transform: translate(340px, 122px);
+  }
+  95% {
+    transform: translate(340px, 122px);
+    opacity: 1;
+  }
+  99% {
+    transform: translate(340px, 122px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(34px, 122px);
+    opacity: 0;
+  }
+}
+
+.legLeft,
+.legRight {
+  transform-box: fill-box;
+  animation: legSwing 0.4s ease-in-out infinite;
+}
+
+.legLeft {
+  transform-origin: 50% 0%;
+}
+
+.legRight {
+  transform-origin: 50% 0%;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes legSwing {
+  0% {
+    transform: rotate(-16deg);
+  }
+  100% {
+    transform: rotate(16deg);
+  }
+}
+
+/* Pipe carried in the plumber's arms, only visible while walking to a spot */
+.plumberCarry {
+  transform-box: fill-box;
+  opacity: 0;
+  animation: carryPipe 16s ease-in-out infinite;
+}
+
+@keyframes carryPipe {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  1.5% {
+    opacity: 1;
+  }
+  6% {
+    opacity: 1;
+  }
+  7.5% {
+    opacity: 0;
+  }
+  16.5% {
+    opacity: 1;
+  }
+  21% {
+    opacity: 1;
+  }
+  22.5% {
+    opacity: 0;
+  }
+  31.5% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 1;
+  }
+  37.5% {
+    opacity: 0;
+  }
+  46.5% {
+    opacity: 1;
+  }
+  51% {
+    opacity: 1;
+  }
+  52.5% {
+    opacity: 0;
+  }
+}
+
+.plumberArm {
+  transform-box: fill-box;
+  transform-origin: 0% 60%;
+  animation: wrenchTurn 16s ease-in-out infinite;
+}
+
+@keyframes wrenchTurn {
+  0%,
+  6%,
+  10.5%,
+  21%,
+  25.5%,
+  36%,
+  40.5%,
+  51%,
+  55.5%,
+  60%,
+  65%,
+  72.5%,
+  73.25%,
+  77.5%,
+  100% {
+    transform: rotate(6deg);
+  }
+  6.75%,
+  21.75%,
+  36.75%,
+  51.75% {
+    transform: rotate(-26deg);
+  }
+  7.88%,
+  22.88%,
+  37.88%,
+  52.88% {
+    transform: rotate(12deg);
+  }
+  9%,
+  24%,
+  39%,
+  54% {
+    transform: rotate(-20deg);
+  }
+  9.75%,
+  24.75%,
+  39.75%,
+  54.75% {
+    transform: rotate(4deg);
+  }
+  72.9% {
+    transform: rotate(-16deg);
+  }
+}
+
+/* ---- Placed pipes ---- */
+.pipe {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+
+.pipe0 {
+  animation: pipeIn0 16s ease-in-out infinite;
+}
+.pipe1 {
+  animation: pipeIn1 16s ease-in-out infinite;
+}
+.pipe2 {
+  animation: pipeIn2 16s ease-in-out infinite;
+}
+.pipe3 {
+  animation: pipeIn3 16s ease-in-out infinite;
+}
+
+@keyframes pipeIn0 {
+  0%,
+  6% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  8.25%,
+  99% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes pipeIn1 {
+  0%,
+  21% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  23.25%,
+  99% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes pipeIn2 {
+  0%,
+  36% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  38.25%,
+  99% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes pipeIn3 {
+  0%,
+  51% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  53.25%,
+  99% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* ---- Monitoring station ---- */
+.statusLight {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Two alternating waveforms crossfade to read as a line moving up and down */
+.graphA {
+  animation: graphA 3.2s ease-in-out infinite;
+}
+.graphB {
+  animation: graphB 3.2s ease-in-out infinite;
+}
+
+@keyframes graphA {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  50%,
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes graphB {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  50%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plumberWalk,
+  .legLeft,
+  .legRight,
+  .plumberArm,
+  .plumberCarry,
+  .pipe0,
+  .pipe1,
+  .pipe2,
+  .pipe3,
+  .statusLight,
+  .graphA,
+  .graphB {
+    animation: none;
+  }
+  .plumberWalk {
+    transform: translate(340px, 122px);
+    opacity: 1;
+  }
+  .plumberCarry {
+    opacity: 0;
+  }
+  .pipe0,
+  .pipe1,
+  .pipe2,
+  .pipe3 {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .graphA {
+    opacity: 1;
+  }
+  .graphB {
+    opacity: 0;
+  }
+}
