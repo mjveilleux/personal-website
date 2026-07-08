@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/api";
-import PlumberAnimation from "@/app/_components/plumber-animation";
+import RobotAnimation from "@/app/_components/robot-animation";
 
 const workExperience = [
   {
@@ -122,7 +122,7 @@ export default function HomePage() {
         <strong className="font-semibold text-[#1f403c]">I design and build machine learning and AI
         pipelines for optimizing decisions under uncertainty.</strong> I care most about ones that are transparent, trustworthy, and give decision-makers the confidence they need.    </p>
 
-    <PlumberAnimation />
+    <RobotAnimation />
 
       <p className="text-lg leading-relaxed text-slate-800 sm:text-[15px]">
         <strong className="font-semibold text-[#1f403c]">I am most excited about</strong> building and deploying statistical models to optimize decision-making alongside fostering a culture of trust and empowerment with data.</p>
