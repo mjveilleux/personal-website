@@ -4,6 +4,7 @@ import cn from "classnames";
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css";
 
@@ -67,6 +68,7 @@ export default function RootLayout({
         </div>
         <Footer />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
