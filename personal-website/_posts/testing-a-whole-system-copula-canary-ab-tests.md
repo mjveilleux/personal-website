@@ -1,6 +1,6 @@
 ---
-title: "Testing a Whole System: Canary Deploys, Kalman Filters, and Copulas"
-excerpt: "Most A/B tests compare two averages. A real system is a call chain running on non-stationary traffic, where a slow function cascades into the ones downstream of it. Here's how to test the whole thing: strip out load before comparing latency, model how functions move together, and decide under honest uncertainty."
+title: 'Software in State-Space: modeling inter-dependence for "push to prod" decision-making'
+excerpt: ""
 date: "2026-08-18T12:00:00.000Z"
 author:
   name: Mason Veilleux
