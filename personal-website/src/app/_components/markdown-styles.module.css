@@ -81,3 +81,12 @@
 .markdown td:not(:first-child) {
   text-align: right;
 }
+
+/* Footnotes (references section) */
+.markdown [data-footnotes] {
+  @apply mt-12 pt-6 border-t border-neutral-200 dark:border-neutral-700 text-sm text-neutral-500;
+}
+
+.markdown [data-footnotes] li {
+  @apply my-2;
+}
