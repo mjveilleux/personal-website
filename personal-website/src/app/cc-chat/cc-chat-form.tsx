@@ -47,7 +47,7 @@ export function CcChatForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <label htmlFor="cc-chat-body" className="sr-only">
-        Your prompt or note
+        Put your prompt in here and click send.
       </label>
       <textarea
         id="cc-chat-body"
@@ -61,7 +61,6 @@ export function CcChatForm() {
             setMessage("");
           }
         }}
-        placeholder="Paste or write your prompt here…"
         className="w-full resize-y rounded-xl border border-[#1a1f25]/15 bg-white/80 px-4 py-3 text-base text-[#1a1f25] shadow-sm outline-none transition focus:border-[#1f403c] focus:ring-2 focus:ring-[#1f403c]/20"
         disabled={status === "submitting"}
       />
@@ -71,7 +70,7 @@ export function CcChatForm() {
           disabled={status === "submitting"}
           className="rounded-full bg-[#1f403c] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#16332f] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {status === "submitting" ? "Saving…" : "Submit"}
+          {status === "submitting" ? "Sending…" : "Send"}
         </button>
         {message ? (
           <p
