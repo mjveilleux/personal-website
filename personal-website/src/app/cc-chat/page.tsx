@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function CcChatPage() {
   return (
-    <main className="mx-auto max-w-2xl px-6 pb-24 pt-14 sm:pt-20">
-      <p className="mb-6 text-base text-slate-600 sm:text-lg">
+    <main className="mx-auto w-full max-w-2xl px-4 pb-24 pt-14 sm:px-6 sm:pt-20">
+      <p className="mb-6 break-words text-base text-slate-600 sm:text-lg">
         Put your prompt in here and click send.
       </p>
       <CcChatForm />
