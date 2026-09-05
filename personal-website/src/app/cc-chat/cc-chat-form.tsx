@@ -2,46 +2,38 @@
 
 import { FormEvent, useState } from "react";
 
-type Status = "idle" | "submitting" | "success" | "error";
-
 export function CcChatForm() {
   const [text, setText] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const body = text.trim();
     if (!body) {
-      setStatus("error");
+      setIsError(true);
       setMessage("Write something before sending.");
       return;
     }
 
-    setStatus("submitting");
-    setMessage("");
+    // Optimistic: clear immediately, save in the background.
+    setText("");
+    setIsError(false);
+    setMessage("Saved.");
 
-    try {
-      const res = await fetch("/api/cc-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body }),
+    void fetch("/api/cc-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ body }),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("save failed");
+      })
+      .catch(() => {
+        setIsError(true);
+        setMessage("Couldn’t save. Try again.");
+        setText(body);
       });
-      const data = (await res.json()) as { error?: string };
-
-      if (!res.ok) {
-        setStatus("error");
-        setMessage(data.error ?? "Something went wrong. Try again.");
-        return;
-      }
-
-      setText("");
-      setStatus("success");
-      setMessage("Saved.");
-    } catch {
-      setStatus("error");
-      setMessage("Network error. Try again.");
-    }
   }
 
   return (
@@ -56,26 +48,24 @@ export function CcChatForm() {
         value={text}
         onChange={(event) => {
           setText(event.target.value);
-          if (status !== "idle" && status !== "submitting") {
-            setStatus("idle");
+          if (message) {
             setMessage("");
+            setIsError(false);
           }
         }}
         className="box-border max-h-[50vh] min-h-[10rem] w-full max-w-full min-w-0 resize-y rounded-xl border border-[#1a1f25]/15 bg-white/80 px-3 py-3 text-base leading-relaxed text-[#1a1f25] shadow-sm outline-none transition focus:border-[#1f403c] focus:ring-2 focus:ring-[#1f403c]/20 sm:px-4"
-        disabled={status === "submitting"}
       />
       <div className="flex w-full min-w-0 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <button
           type="submit"
-          disabled={status === "submitting"}
-          className="w-full rounded-full bg-[#1f403c] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#16332f] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:py-2.5"
+          className="w-full rounded-full bg-[#1f403c] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#16332f] sm:w-auto sm:py-2.5"
         >
-          {status === "submitting" ? "Sending…" : "Send"}
+          Send
         </button>
         {message ? (
           <p
             className={
-              status === "error"
+              isError
                 ? "min-w-0 break-words text-sm text-red-700"
                 : "min-w-0 break-words text-sm text-[#1f403c]"
             }
