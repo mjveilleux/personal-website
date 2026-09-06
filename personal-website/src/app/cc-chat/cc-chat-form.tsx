@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type Submission = {
   id: string;
@@ -8,11 +8,12 @@ type Submission = {
   createdAt: string;
 };
 
-type Props = {
+type FormProps = {
+  onOptimisticSubmit?: (submission: Submission) => void;
   onSubmitted?: () => void;
 };
 
-export function CcChatForm({ onSubmitted }: Props) {
+export function CcChatForm({ onOptimisticSubmit, onSubmitted }: FormProps) {
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -26,10 +27,17 @@ export function CcChatForm({ onSubmitted }: Props) {
       return;
     }
 
-    // Optimistic: clear immediately, save in the background.
+    const optimistic: Submission = {
+      id: `local-${Date.now()}`,
+      body,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Optimistic: clear immediately and show in the list right away.
     setText("");
     setIsError(false);
     setMessage("Saved.");
+    onOptimisticSubmit?.(optimistic);
 
     void fetch("/api/cc-chat", {
       method: "POST",
@@ -90,16 +98,63 @@ export function CcChatForm({ onSubmitted }: Props) {
   );
 }
 
-export function CcChatSubmissions({ refreshKey = 0 }: { refreshKey?: number }) {
+function mergeSubmissions(
+  current: Submission[],
+  incoming: Submission[],
+): Submission[] {
+  const byBodyTime = new Map<string, Submission>();
+  for (const item of [...incoming, ...current]) {
+    // Prefer server ids over local optimistic ones with the same body+second.
+    const key = `${item.body}::${item.createdAt.slice(0, 19)}`;
+    const existing = byBodyTime.get(key);
+    if (!existing || existing.id.startsWith("local-")) {
+      byBodyTime.set(key, item);
+    }
+  }
+
+  // Also keep unique by id
+  const byId = new Map<string, Submission>();
+  for (const item of byBodyTime.values()) {
+    byId.set(item.id, item);
+  }
+  // Drop local duplicates once a real server entry with same body exists nearby
+  const serverBodies = new Set(
+    [...byId.values()]
+      .filter((item) => !item.id.startsWith("local-"))
+      .map((item) => item.body),
+  );
+  const merged = [...byId.values()].filter(
+    (item) => !item.id.startsWith("local-") || !serverBodies.has(item.body),
+  );
+
+  return merged.sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+}
+
+export function CcChatSubmissions({
+  refreshKey = 0,
+  optimistic,
+}: {
+  refreshKey?: number;
+  optimistic?: Submission | null;
+}) {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [error, setError] = useState("");
+  const seenOptimistic = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/cc-chat", { cache: "no-store" });
+      const res = await fetch(`/api/cc-chat?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (!res.ok) throw new Error("Failed to load");
       const data = (await res.json()) as Submission[];
-      setSubmissions(Array.isArray(data) ? data : []);
+      setSubmissions((current) =>
+        mergeSubmissions(current, Array.isArray(data) ? data : []),
+      );
       setError("");
     } catch {
       setError("Couldn’t load submissions.");
@@ -110,9 +165,15 @@ export function CcChatSubmissions({ refreshKey = 0 }: { refreshKey?: number }) {
     void load();
     const id = window.setInterval(() => {
       void load();
-    }, 4000);
+    }, 2000);
     return () => window.clearInterval(id);
   }, [load, refreshKey]);
+
+  useEffect(() => {
+    if (!optimistic || seenOptimistic.current === optimistic.id) return;
+    seenOptimistic.current = optimistic.id;
+    setSubmissions((current) => mergeSubmissions(current, [optimistic]));
+  }, [optimistic]);
 
   return (
     <section className="mt-10 w-full min-w-0">
@@ -143,11 +204,15 @@ export function CcChatSubmissions({ refreshKey = 0 }: { refreshKey?: number }) {
 
 export function CcChatClient() {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [optimistic, setOptimistic] = useState<Submission | null>(null);
 
   return (
     <>
-      <CcChatForm onSubmitted={() => setRefreshKey((value) => value + 1)} />
-      <CcChatSubmissions refreshKey={refreshKey} />
+      <CcChatForm
+        onOptimisticSubmit={setOptimistic}
+        onSubmitted={() => setRefreshKey((value) => value + 1)}
+      />
+      <CcChatSubmissions refreshKey={refreshKey} optimistic={optimistic} />
     </>
   );
 }

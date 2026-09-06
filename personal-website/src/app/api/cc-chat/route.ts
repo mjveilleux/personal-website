@@ -2,6 +2,8 @@ import { list, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type Submission = {
   id: string;
@@ -51,7 +53,12 @@ export async function GET() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
-    return NextResponse.json(submissions);
+    return NextResponse.json(submissions, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        Pragma: "no-cache",
+      },
+    });
   } catch (error) {
     console.error("cc-chat GET failed", error);
     return NextResponse.json(
