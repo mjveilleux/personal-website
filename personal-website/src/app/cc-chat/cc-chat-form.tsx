@@ -1,8 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 
-export function CcChatForm() {
+type Submission = {
+  id: string;
+  body: string;
+  createdAt: string;
+};
+
+type Props = {
+  onSubmitted?: () => void;
+};
+
+export function CcChatForm({ onSubmitted }: Props) {
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -28,6 +38,7 @@ export function CcChatForm() {
     })
       .then(async (res) => {
         if (!res.ok) throw new Error("save failed");
+        onSubmitted?.();
       })
       .catch(() => {
         setIsError(true);
@@ -76,5 +87,67 @@ export function CcChatForm() {
         ) : null}
       </div>
     </form>
+  );
+}
+
+export function CcChatSubmissions({ refreshKey = 0 }: { refreshKey?: number }) {
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/cc-chat", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load");
+      const data = (await res.json()) as Submission[];
+      setSubmissions(Array.isArray(data) ? data : []);
+      setError("");
+    } catch {
+      setError("Couldn’t load submissions.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+    const id = window.setInterval(() => {
+      void load();
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, [load, refreshKey]);
+
+  return (
+    <section className="mt-10 w-full min-w-0">
+      <h2 className="text-xl font-semibold text-[#1a1f25]">Submissions</h2>
+      {error ? (
+        <p className="mt-3 text-sm text-red-700">{error}</p>
+      ) : null}
+      {submissions.length === 0 && !error ? (
+        <p className="mt-3 text-sm text-slate-500">No submissions yet.</p>
+      ) : (
+        <ul className="mt-4 space-y-3">
+          {submissions.map((item) => (
+            <li
+              key={item.id}
+              className="w-full min-w-0 break-words rounded-xl border border-[#1a1f25]/10 bg-white/70 px-4 py-3 text-base text-[#1a1f25]"
+            >
+              <p className="whitespace-pre-wrap">{item.body}</p>
+              <p className="mt-2 text-xs text-slate-500">
+                {new Date(item.createdAt).toLocaleString()}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+export function CcChatClient() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  return (
+    <>
+      <CcChatForm onSubmitted={() => setRefreshKey((value) => value + 1)} />
+      <CcChatSubmissions refreshKey={refreshKey} />
+    </>
   );
 }
