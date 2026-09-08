@@ -121,7 +121,10 @@ export async function GET() {
   } catch (error) {
     console.error("cc-chat GET failed", error);
     return NextResponse.json(
-      { error: "Failed to load submissions." },
+      {
+        error: "Failed to load submissions.",
+        detail: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
@@ -162,7 +165,10 @@ export async function DELETE() {
   } catch (error) {
     console.error("cc-chat DELETE failed", error);
     return NextResponse.json(
-      { error: "Failed to clear submissions." },
+      {
+        error: "Failed to clear submissions.",
+        detail: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
@@ -227,7 +233,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("cc-chat POST failed", error);
     return NextResponse.json(
-      { error: "Failed to save submission." },
+      {
+        error: "Failed to save submission.",
+        detail: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
