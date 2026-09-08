@@ -120,10 +120,14 @@ export function CcChatSubmissions({
   refreshKey = 0,
   optimistic,
   onCleared,
+  registerClear,
+  onClearingChange,
 }: {
   refreshKey?: number;
   optimistic?: Submission | null;
   onCleared?: () => void;
+  registerClear?: (clearFn: (() => void) | null) => void;
+  onClearingChange?: (clearing: boolean) => void;
 }) {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [error, setError] = useState("");
@@ -205,7 +209,7 @@ export function CcChatSubmissions({
     });
   }, [optimistic]);
 
-  async function clearAll() {
+  const clearAll = useCallback(async () => {
     if (
       !window.confirm(
         "Delete all submissions from the store? This cannot be undone.",
@@ -215,6 +219,7 @@ export function CcChatSubmissions({
     }
 
     setClearing(true);
+    onClearingChange?.(true);
     setError("");
     try {
       const res = await fetch("/api/cc-chat", { method: "DELETE" });
@@ -238,24 +243,20 @@ export function CcChatSubmissions({
       setError("Couldn’t clear submissions.");
     } finally {
       setClearing(false);
+      onClearingChange?.(false);
     }
-  }
+  }, [load, onCleared, onClearingChange]);
+
+  useEffect(() => {
+    registerClear?.(() => {
+      void clearAll();
+    });
+    return () => registerClear?.(null);
+  }, [clearAll, registerClear]);
 
   return (
     <section className="mt-10 w-full min-w-0">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-[#1a1f25]">Submissions</h2>
-        <button
-          type="button"
-          onClick={() => {
-            void clearAll();
-          }}
-          disabled={clearing}
-          className="rounded-full border border-red-700/30 px-4 py-2 text-sm font-medium text-red-800 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {clearing ? "Clearing…" : "Clear all"}
-        </button>
-      </div>
+      <h2 className="text-xl font-semibold text-[#1a1f25]">Submissions</h2>
       {error ? (
         <p className="mt-3 text-sm text-red-700">{error}</p>
       ) : null}
@@ -280,12 +281,41 @@ export function CcChatSubmissions({
   );
 }
 
-export function CcChatClient() {
+export function CcChatClient({ qrDataUrl }: { qrDataUrl: string }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [optimistic, setOptimistic] = useState<Submission | null>(null);
+  const [clearing, setClearing] = useState(false);
+  const clearFnRef = useRef<(() => void) | null>(null);
 
   return (
     <>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <p className="min-w-0 flex-1 break-words text-base text-slate-600 sm:text-lg">
+          Put your prompt in here and click send.
+        </p>
+        <button
+          type="button"
+          onClick={() => clearFnRef.current?.()}
+          disabled={clearing}
+          className="shrink-0 rounded-full border border-red-700/30 px-4 py-2 text-sm font-medium text-red-800 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {clearing ? "Clearing…" : "Clear"}
+        </button>
+      </div>
+
+      <figure className="mb-8 flex flex-col items-center">
+        <img
+          src={qrDataUrl}
+          alt="QR code linking to this page"
+          width={280}
+          height={280}
+          className="h-56 w-56 rounded-xl bg-white p-3 shadow-sm sm:h-64 sm:w-64"
+        />
+        <figcaption className="mt-2 text-center text-xs text-slate-500">
+          Scan to open
+        </figcaption>
+      </figure>
+
       <CcChatForm
         onOptimisticSubmit={setOptimistic}
         onSubmitted={() => setRefreshKey((value) => value + 1)}
@@ -297,6 +327,10 @@ export function CcChatClient() {
           setOptimistic(null);
           setRefreshKey((value) => value + 1);
         }}
+        registerClear={(fn) => {
+          clearFnRef.current = fn;
+        }}
+        onClearingChange={setClearing}
       />
     </>
   );
