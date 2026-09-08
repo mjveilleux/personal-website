@@ -11,14 +11,20 @@ type Submission = {
   createdAt: string;
 };
 
+type Meta = {
+  generation: number;
+  clearedAt: string;
+};
+
 const PREFIX = "cc-chat/";
+const META_PATH = `${PREFIX}meta.json`;
 
 function hasBlobToken() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 async function listAllBlobs() {
-  const blobs = [];
+  const blobs: Awaited<ReturnType<typeof list>>["blobs"] = [];
   let cursor: string | undefined;
 
   do {
@@ -28,6 +34,43 @@ async function listAllBlobs() {
   } while (cursor);
 
   return blobs;
+}
+
+async function readMeta(
+  blobs: Awaited<ReturnType<typeof listAllBlobs>>,
+): Promise<Meta> {
+  const metaBlob = blobs.find((blob) => blob.pathname === META_PATH);
+  if (!metaBlob) {
+    return { generation: 0, clearedAt: "1970-01-01T00:00:00.000Z" };
+  }
+
+  try {
+    const res = await fetch(metaBlob.url, { cache: "no-store" });
+    if (!res.ok) {
+      return { generation: 0, clearedAt: "1970-01-01T00:00:00.000Z" };
+    }
+    const data = (await res.json()) as Partial<Meta>;
+    return {
+      generation:
+        typeof data.generation === "number" && Number.isFinite(data.generation)
+          ? data.generation
+          : 0,
+      clearedAt:
+        typeof data.clearedAt === "string"
+          ? data.clearedAt
+          : "1970-01-01T00:00:00.000Z",
+    };
+  } catch {
+    return { generation: 0, clearedAt: "1970-01-01T00:00:00.000Z" };
+  }
+}
+
+function cacheHeaders(generation: number) {
+  return {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    Pragma: "no-cache",
+    "X-Cc-Chat-Generation": String(generation),
+  };
 }
 
 export async function GET() {
@@ -40,19 +83,25 @@ export async function GET() {
 
   try {
     const blobs = await listAllBlobs();
+    const meta = await readMeta(blobs);
+    const clearedAtMs = new Date(meta.clearedAt).getTime();
 
     const submissions = (
       await Promise.all(
         blobs.map(async (blob): Promise<Submission | null> => {
+          if (blob.pathname === META_PATH) return null;
           try {
             const res = await fetch(blob.url, { cache: "no-store" });
             if (!res.ok) return null;
             const data = (await res.json()) as Partial<Submission>;
             if (typeof data.body !== "string") return null;
+            const createdAt =
+              data.createdAt ?? blob.uploadedAt.toISOString();
+            if (new Date(createdAt).getTime() <= clearedAtMs) return null;
             return {
               id: data.id ?? blob.pathname,
               body: data.body,
-              createdAt: data.createdAt ?? blob.uploadedAt.toISOString(),
+              createdAt,
             };
           } catch {
             return null;
@@ -67,10 +116,7 @@ export async function GET() {
     );
 
     return NextResponse.json(submissions, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-        Pragma: "no-cache",
-      },
+      headers: cacheHeaders(meta.generation),
     });
   } catch (error) {
     console.error("cc-chat GET failed", error);
@@ -91,17 +137,27 @@ export async function DELETE() {
 
   try {
     const blobs = await listAllBlobs();
-    if (blobs.length > 0) {
-      await del(blobs.map((blob) => blob.url));
+    const meta = await readMeta(blobs);
+    const nextMeta: Meta = {
+      generation: meta.generation + 1,
+      clearedAt: new Date().toISOString(),
+    };
+
+    const toDelete = blobs.map((blob) => blob.url);
+    if (toDelete.length > 0) {
+      await del(toDelete);
     }
 
+    await put(META_PATH, JSON.stringify(nextMeta), {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+
     return NextResponse.json(
-      { ok: true, deleted: blobs.length },
-      {
-        headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-        },
-      },
+      { ok: true, deleted: toDelete.length, generation: nextMeta.generation },
+      { headers: cacheHeaders(nextMeta.generation) },
     );
   } catch (error) {
     console.error("cc-chat DELETE failed", error);
