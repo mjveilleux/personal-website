@@ -8,6 +8,8 @@ type Submission = {
   createdAt: string;
 };
 
+const CHANNEL = "cc-chat-sync";
+
 type FormProps = {
   onOptimisticSubmit?: (submission: Submission) => void;
   onSubmitted?: () => void;
@@ -33,7 +35,6 @@ export function CcChatForm({ onOptimisticSubmit, onSubmitted }: FormProps) {
       createdAt: new Date().toISOString(),
     };
 
-    // Optimistic: clear immediately and show in the list right away.
     setText("");
     setIsError(false);
     setMessage("Saved.");
@@ -102,6 +103,8 @@ function withPendingLocals(
   serverItems: Submission[],
   current: Submission[],
 ): Submission[] {
+  if (serverItems.length === 0) return [];
+
   const serverBodies = new Set(serverItems.map((item) => item.body));
   const pendingLocals = current.filter(
     (item) => item.id.startsWith("local-") && !serverBodies.has(item.body),
@@ -126,6 +129,28 @@ export function CcChatSubmissions({
   const [error, setError] = useState("");
   const [clearing, setClearing] = useState(false);
   const seenOptimistic = useRef<string | null>(null);
+  const generationRef = useRef<number | null>(null);
+
+  const applyServerItems = useCallback(
+    (serverItems: Submission[], generation: number | null) => {
+      const generationChanged =
+        generation !== null &&
+        generationRef.current !== null &&
+        generation !== generationRef.current;
+
+      if (generation !== null) {
+        generationRef.current = generation;
+      }
+
+      if (generationChanged || serverItems.length === 0) {
+        setSubmissions(serverItems);
+        return;
+      }
+
+      setSubmissions((current) => withPendingLocals(serverItems, current));
+    },
+    [],
+  );
 
   const load = useCallback(async () => {
     try {
@@ -136,20 +161,40 @@ export function CcChatSubmissions({
       if (!res.ok) throw new Error("Failed to load");
       const data = (await res.json()) as Submission[];
       const serverItems = Array.isArray(data) ? data : [];
-      setSubmissions((current) => withPendingLocals(serverItems, current));
+      const generationHeader = res.headers.get("X-Cc-Chat-Generation");
+      const generation =
+        generationHeader !== null && generationHeader !== ""
+          ? Number(generationHeader)
+          : null;
+      applyServerItems(
+        serverItems,
+        generation !== null && Number.isFinite(generation) ? generation : null,
+      );
       setError("");
     } catch {
       setError("Couldn’t load submissions.");
     }
-  }, []);
+  }, [applyServerItems]);
 
   useEffect(() => {
     void load();
     const id = window.setInterval(() => {
       void load();
-    }, 2000);
+    }, 1000);
     return () => window.clearInterval(id);
   }, [load, refreshKey]);
+
+  useEffect(() => {
+    if (typeof BroadcastChannel === "undefined") return;
+    const channel = new BroadcastChannel(CHANNEL);
+    channel.onmessage = (event: MessageEvent<{ type?: string }>) => {
+      if (event.data?.type === "cleared") {
+        setSubmissions([]);
+        void load();
+      }
+    };
+    return () => channel.close();
+  }, [load]);
 
   useEffect(() => {
     if (!optimistic || seenOptimistic.current === optimistic.id) return;
@@ -174,8 +219,21 @@ export function CcChatSubmissions({
     try {
       const res = await fetch("/api/cc-chat", { method: "DELETE" });
       if (!res.ok) throw new Error("clear failed");
+      const generationHeader = res.headers.get("X-Cc-Chat-Generation");
+      if (generationHeader) {
+        const generation = Number(generationHeader);
+        if (Number.isFinite(generation)) {
+          generationRef.current = generation;
+        }
+      }
       setSubmissions([]);
+      if (typeof BroadcastChannel !== "undefined") {
+        const channel = new BroadcastChannel(CHANNEL);
+        channel.postMessage({ type: "cleared" });
+        channel.close();
+      }
       onCleared?.();
+      void load();
     } catch {
       setError("Couldn’t clear submissions.");
     } finally {
