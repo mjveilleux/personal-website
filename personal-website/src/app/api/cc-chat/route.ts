@@ -1,4 +1,4 @@
-import { list, put } from "@vercel/blob";
+import { del, list, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -17,6 +17,19 @@ function hasBlobToken() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
+async function listAllBlobs() {
+  const blobs = [];
+  let cursor: string | undefined;
+
+  do {
+    const result = await list({ prefix: PREFIX, cursor });
+    blobs.push(...result.blobs);
+    cursor = result.hasMore ? result.cursor : undefined;
+  } while (cursor);
+
+  return blobs;
+}
+
 export async function GET() {
   if (!hasBlobToken()) {
     return NextResponse.json(
@@ -26,7 +39,7 @@ export async function GET() {
   }
 
   try {
-    const { blobs } = await list({ prefix: PREFIX });
+    const blobs = await listAllBlobs();
 
     const submissions = (
       await Promise.all(
@@ -63,6 +76,37 @@ export async function GET() {
     console.error("cc-chat GET failed", error);
     return NextResponse.json(
       { error: "Failed to load submissions." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE() {
+  if (!hasBlobToken()) {
+    return NextResponse.json(
+      { error: "Blob storage is not configured." },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const blobs = await listAllBlobs();
+    if (blobs.length > 0) {
+      await del(blobs.map((blob) => blob.url));
+    }
+
+    return NextResponse.json(
+      { ok: true, deleted: blobs.length },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      },
+    );
+  } catch (error) {
+    console.error("cc-chat DELETE failed", error);
+    return NextResponse.json(
+      { error: "Failed to clear submissions." },
       { status: 500 },
     );
   }

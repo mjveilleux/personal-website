@@ -98,36 +98,16 @@ export function CcChatForm({ onOptimisticSubmit, onSubmitted }: FormProps) {
   );
 }
 
-function mergeSubmissions(
+function withPendingLocals(
+  serverItems: Submission[],
   current: Submission[],
-  incoming: Submission[],
 ): Submission[] {
-  const byBodyTime = new Map<string, Submission>();
-  for (const item of [...incoming, ...current]) {
-    // Prefer server ids over local optimistic ones with the same body+second.
-    const key = `${item.body}::${item.createdAt.slice(0, 19)}`;
-    const existing = byBodyTime.get(key);
-    if (!existing || existing.id.startsWith("local-")) {
-      byBodyTime.set(key, item);
-    }
-  }
-
-  // Also keep unique by id
-  const byId = new Map<string, Submission>();
-  for (const item of byBodyTime.values()) {
-    byId.set(item.id, item);
-  }
-  // Drop local duplicates once a real server entry with same body exists nearby
-  const serverBodies = new Set(
-    [...byId.values()]
-      .filter((item) => !item.id.startsWith("local-"))
-      .map((item) => item.body),
-  );
-  const merged = [...byId.values()].filter(
-    (item) => !item.id.startsWith("local-") || !serverBodies.has(item.body),
+  const serverBodies = new Set(serverItems.map((item) => item.body));
+  const pendingLocals = current.filter(
+    (item) => item.id.startsWith("local-") && !serverBodies.has(item.body),
   );
 
-  return merged.sort(
+  return [...serverItems, ...pendingLocals].sort(
     (a, b) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
@@ -136,12 +116,15 @@ function mergeSubmissions(
 export function CcChatSubmissions({
   refreshKey = 0,
   optimistic,
+  onCleared,
 }: {
   refreshKey?: number;
   optimistic?: Submission | null;
+  onCleared?: () => void;
 }) {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [error, setError] = useState("");
+  const [clearing, setClearing] = useState(false);
   const seenOptimistic = useRef<string | null>(null);
 
   const load = useCallback(async () => {
@@ -152,9 +135,8 @@ export function CcChatSubmissions({
       });
       if (!res.ok) throw new Error("Failed to load");
       const data = (await res.json()) as Submission[];
-      setSubmissions((current) =>
-        mergeSubmissions(current, Array.isArray(data) ? data : []),
-      );
+      const serverItems = Array.isArray(data) ? data : [];
+      setSubmissions((current) => withPendingLocals(serverItems, current));
       setError("");
     } catch {
       setError("Couldn’t load submissions.");
@@ -172,12 +154,50 @@ export function CcChatSubmissions({
   useEffect(() => {
     if (!optimistic || seenOptimistic.current === optimistic.id) return;
     seenOptimistic.current = optimistic.id;
-    setSubmissions((current) => mergeSubmissions(current, [optimistic]));
+    setSubmissions((current) => {
+      if (current.some((item) => item.id === optimistic.id)) return current;
+      return [optimistic, ...current];
+    });
   }, [optimistic]);
+
+  async function clearAll() {
+    if (
+      !window.confirm(
+        "Delete all submissions from the store? This cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    setClearing(true);
+    setError("");
+    try {
+      const res = await fetch("/api/cc-chat", { method: "DELETE" });
+      if (!res.ok) throw new Error("clear failed");
+      setSubmissions([]);
+      onCleared?.();
+    } catch {
+      setError("Couldn’t clear submissions.");
+    } finally {
+      setClearing(false);
+    }
+  }
 
   return (
     <section className="mt-10 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-[#1a1f25]">Submissions</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold text-[#1a1f25]">Submissions</h2>
+        <button
+          type="button"
+          onClick={() => {
+            void clearAll();
+          }}
+          disabled={clearing}
+          className="rounded-full border border-red-700/30 px-4 py-2 text-sm font-medium text-red-800 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {clearing ? "Clearing…" : "Clear all"}
+        </button>
+      </div>
       {error ? (
         <p className="mt-3 text-sm text-red-700">{error}</p>
       ) : null}
@@ -212,7 +232,14 @@ export function CcChatClient() {
         onOptimisticSubmit={setOptimistic}
         onSubmitted={() => setRefreshKey((value) => value + 1)}
       />
-      <CcChatSubmissions refreshKey={refreshKey} optimistic={optimistic} />
+      <CcChatSubmissions
+        refreshKey={refreshKey}
+        optimistic={optimistic}
+        onCleared={() => {
+          setOptimistic(null);
+          setRefreshKey((value) => value + 1);
+        }}
+      />
     </>
   );
 }
