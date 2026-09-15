@@ -54,7 +54,7 @@ const talks = [
     title: "The “Baygentic” Workflow",
     event: "Claude Code Meetup · Anchorage · Sept 11, 2026",
     description:
-      "Using agents to automate the model development workflow — iterating through Bayesian model specifications faster so you can make better decisions under uncertainty.",
+      "This is my Claude Code talk on using agents to automate the model development workflow.",
     href: "/talks/baygentic-workflow.pdf",
   },
 ];
@@ -186,38 +186,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Talks */}
-      <section className="mt-12 border-t border-slate-200 pt-8">
-        <div className="mb-5 flex items-baseline gap-3">
-          <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
-            Talks
-          </p>
-          <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
-        </div>
-        <div className="space-y-7">
-          {talks.map((talk) => (
-            <a
-              key={talk.title}
-              href={talk.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block rounded-md px-2 py-1.5 -mx-2 transition-colors hover:bg-black/[0.03]"
-            >
-              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span className="font-medium text-[#1f403c] group-hover:underline underline-offset-4">
-                  {talk.title}
-                </span>
-                <span className="text-sm text-slate-400 sm:text-[12px]">Slides (PDF)</span>
-              </div>
-              <p className="mt-0.5 text-sm text-slate-400 sm:text-[12px]">{talk.event}</p>
-              <p className="mt-1.5 text-base leading-relaxed text-slate-500 sm:text-[13px]">
-                {talk.description}
-              </p>
-            </a>
-          ))}
-        </div>
-      </section>
-
       {/* Things that inspire me */}
       <section className="mt-12 border-t border-slate-200 pt-8">
         <div className="mb-5 flex items-baseline gap-3">
@@ -272,6 +240,38 @@ export default function HomePage() {
           </ul>
         </section>
       )}
+
+      {/* Talks */}
+      <section className="mt-12 border-t border-slate-200 pt-8">
+        <div className="mb-5 flex items-baseline gap-3">
+          <p className="whitespace-nowrap text-base font-semibold text-slate-400 sm:text-[13px]">
+            Talks
+          </p>
+          <span className="flex-1 border-b border-dotted border-slate-300" aria-hidden />
+        </div>
+        <div className="space-y-7">
+          {talks.map((talk) => (
+            <a
+              key={talk.title}
+              href={talk.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block rounded-md px-2 py-1.5 -mx-2 transition-colors hover:bg-black/[0.03]"
+            >
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span className="font-medium text-[#1f403c] group-hover:underline underline-offset-4">
+                  {talk.title}
+                </span>
+                <span className="text-sm text-slate-400 sm:text-[12px]">Slides (PDF)</span>
+              </div>
+              <p className="mt-0.5 text-sm text-slate-400 sm:text-[12px]">{talk.event}</p>
+              <p className="mt-1.5 text-base leading-relaxed text-slate-500 sm:text-[13px]">
+                {talk.description}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
 
       {/* Footer links */}
       <section className="mt-12 border-t border-slate-200 pt-8">
