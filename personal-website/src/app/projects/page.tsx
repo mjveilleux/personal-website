@@ -11,12 +11,12 @@ export const metadata = {
 export default function ProjectsPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 pb-24 pt-10 sm:pt-14">
-      <Link href="/" className="text-[13px] text-slate-400 hover:text-slate-600 transition-colors">
+      <Link href="/" className="text-base text-slate-400 hover:text-slate-600 transition-colors">
         ← Mason Veilleux
       </Link>
       <div className="mt-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Projects</p>
-        <h1 className="mt-3 font-display text-2xl sm:text-4xl text-slate-900">
+        <p className="text-sm font-semibold uppercase tracking-[0.4em] text-slate-400">Projects</p>
+        <h1 className="mt-3 font-display text-3xl sm:text-4xl text-slate-900">
           Full-stack analytics in the wild.
         </h1>
       </div>
@@ -29,14 +29,14 @@ export default function ProjectsPage() {
             className="group block rounded-md px-2 py-2 -mx-2 transition-colors hover:bg-black/[0.03]"
           >
             <div className="flex items-baseline gap-2">
-              <h2 className="font-medium text-[#1f403c] text-[15px] group-hover:underline underline-offset-4">
+              <h2 className="font-medium text-[#1f403c] text-xl group-hover:underline underline-offset-4">
                 {project.title}
               </h2>
             </div>
-            <p className="mt-1 text-[13px] text-slate-500">{project.summary}</p>
+            <p className="mt-1.5 text-lg text-slate-500">{project.summary}</p>
             <ul className="mt-2 space-y-1">
               {project.highlights.map((item) => (
-                <li key={item} className="flex gap-2 text-[13px] text-slate-400">
+                <li key={item} className="flex gap-2 text-lg text-slate-400">
                   <span className="shrink-0 text-slate-300">—</span>
                   <span>{item}</span>
                 </li>
@@ -46,7 +46,7 @@ export default function ProjectsPage() {
         ))}
       </section>
 
-      <p className="mt-12 text-[13px] text-slate-500">
+      <p className="mt-12 text-lg text-slate-500">
         Want to explore a similar build?{" "}
         <a
           href="mailto:masonjveilleux@gmail.com"

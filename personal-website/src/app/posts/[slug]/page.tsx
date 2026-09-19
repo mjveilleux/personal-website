@@ -19,7 +19,7 @@ export default async function Post(props: Params) {
 
   return (
     <main className="mx-auto max-w-2xl px-6 pb-24 pt-10 sm:pt-14">
-      <Link href="/" className="text-[13px] text-slate-400 hover:text-slate-600 transition-colors">
+      <Link href="/" className="text-base text-slate-400 hover:text-slate-600 transition-colors">
         ← Mason Veilleux
       </Link>
       <article className="mt-10 mb-24">
