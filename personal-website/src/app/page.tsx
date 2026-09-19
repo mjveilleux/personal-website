@@ -53,17 +53,17 @@ const inspiredBy = [
   {
     title: "Observational Price Variation in Scanner Data Does Not Reproduce Experimental Price Elasticities",
     url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4899765",
-    note: "Observational causal inference falls short of experimentation — this is why you need experimentation.",
+    note: "A paper I usually reference when someone asks me why we need experimentation instead of using observational causal inference. I think it deeply reflects the purpose of experimentation.",
   },
   {
     title: "The Soul of Erlang and Elixir",
     url: "https://www.youtube.com/watch?v=JvBT4XBdoUE",
-    note: "Perfectly captures how resilient systems interface with a functional language.",
+    note: "Elixir is an elegant interface for solving fault tolerance. The ability of the speaker to elucidate the primitives of the language and why it’s important is something I aspire to do. A good idea is also one that can be clearly explained.",
   },
   {
     title: "You Can Just Do Things",
     url: "https://www.youtube.com/watch?v=X7HFU786NiQ",
-    note: "The ending of a Neovim tutorial that hooked me into making Neovim my daily driver. You get to decide how your daily software tools look, you can have fun building them, and you can make them work best for you. I try to instill this mantra daily.",
+    note: "You will usually hear me say, “you can just do things”. I believe that we are the common denominator in all things that relate to us which gives us the choice to make changes. If you have the will, you can just do things.",
   },
 ];
 
