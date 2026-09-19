@@ -8,17 +8,22 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css";
 
+// Variable files + `optional` so reloads do not swap fallback glyphs after paint.
 const display = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-display",
+  display: "optional",
+  adjustFontFallback: true,
 });
 
 const body = Work_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-body",
+  display: "optional",
+  adjustFontFallback: true,
 });
+
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Mason Veilleux | Data engineer, economist, writer",
@@ -33,9 +38,12 @@ export const metadata: Metadata = {
   },
   manifest: "/favicon/site.webmanifest",
   icons: {
-    icon: "/favicon/mason-avatar.webp",
-    shortcut: "/favicon/mason-avatar.webp",
-    apple: "/favicon/mason-avatar.webp",
+    icon: [
+      { url: "/favicon/favicon.ico" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/favicon/favicon.ico",
+    apple: "/favicon/apple-touch-icon.png",
   },
   alternates: {
     types: {
@@ -56,15 +64,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          body.className,
-          display.variable,
-          body.variable,
-          "bg-[var(--sand)] text-[var(--ink)] antialiased",
-        )}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(display.variable, body.variable, body.className)}
+    >
+      <body className="bg-[var(--sand)] text-[var(--ink)] antialiased">
         <div className="min-h-screen">
           {children}
         </div>
