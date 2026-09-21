@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pymc as pm
 from matplotlib.ticker import FuncFormatter
-from scipy.stats import gaussian_kde
+from scipy.stats import gaussian_kde, norm, poisson
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -170,6 +170,87 @@ def plot_parameter_posteriors(
     return theme.savefig(fig, path)
 
 
+def _poisson_ppd(a: np.ndarray, b: np.ndarray, price: np.ndarray, ks: np.ndarray) -> np.ndarray:
+    """Posterior predictive P(Y=k), mixing over draws and observed prices."""
+    lam = np.exp(a[:, None] + b[:, None] * price[None, :])
+    return np.array([poisson.pmf(int(k), lam).mean() for k in ks], dtype=float)
+
+
+def _normal_ppd(
+    a: np.ndarray, b: np.ndarray, sigma: np.ndarray, price: np.ndarray, ys: np.ndarray
+) -> np.ndarray:
+    """Posterior predictive density of Y, mixing over draws and observed prices."""
+    lam = np.exp(a[:, None] + b[:, None] * price[None, :])
+    scale = sigma[:, None]
+    pdf = np.zeros(len(ys), dtype=float)
+    for i in range(price.size):
+        pdf += norm.pdf(ys[None, :], loc=lam[:, i : i + 1], scale=scale).mean(axis=0)
+    return pdf / price.size
+
+
+def plot_outcome_posterior(
+    y: np.ndarray,
+    price: np.ndarray,
+    wrong: dict[str, np.ndarray],
+    correct: dict[str, np.ndarray],
+    path: Path,
+) -> Path:
+    theme.apply("sand")
+    fig, ax = plt.subplots()
+    y_max = int(np.max(y))
+    bins = np.arange(-0.5, y_max + 1.5, 1.0)
+    ax.hist(
+        y,
+        bins=bins,
+        density=True,
+        color=theme.COLORS.ink,
+        alpha=0.22,
+        edgecolor=theme.COLORS.ink,
+        linewidth=0.7,
+        label="Observed y",
+        zorder=1,
+    )
+
+    ks = np.arange(0, y_max + 4)
+    ys = np.linspace(-3.0, y_max + 3.5, 400)
+    true_pmf = np.array(
+        [poisson.pmf(int(k), mean_fn(TRUE_A, TRUE_B, price)).mean() for k in ks],
+        dtype=float,
+    )
+    poisson_pmf = _poisson_ppd(correct["a"], correct["b"], price, ks)
+    normal_pdf = _normal_ppd(wrong["a"], wrong["b"], wrong["sigma"], price, ys)
+
+    ax.plot(
+        ks,
+        true_pmf,
+        color=theme.COLORS.ink,
+        linestyle=(0, (1.15, 2.2)),
+        marker="o",
+        markersize=3.5,
+        label="True p(y)",
+        zorder=3,
+    )
+    ax.fill_between(ys, normal_pdf, color=theme.COLORS.clay, alpha=0.35, linewidth=0, zorder=2)
+    ax.plot(ys, normal_pdf, color=theme.COLORS.clay, label="Normal posterior of y", zorder=2)
+    ax.plot(
+        ks,
+        poisson_pmf,
+        color=theme.COLORS.pine,
+        marker="o",
+        markersize=3.5,
+        label="Poisson posterior of y",
+        zorder=3,
+    )
+    ax.axvline(0.0, color=theme.COLORS.ink, linewidth=0.7, alpha=0.35)
+    ax.set_xlim(-2.4, y_max + 2.5)
+    ax.set_xlabel("Units sold")
+    ax.set_ylabel("Density")
+    theme.set_title(ax, "Posterior of y vs the data")
+    ax.legend(loc="upper right", frameon=False)
+    fig.tight_layout()
+    return theme.savefig(fig, path)
+
+
 def plot_data(price: np.ndarray, y: np.ndarray, wrong: dict, correct: dict, path: Path) -> Path:
     theme.apply("sand")
     fig, ax = plt.subplots()
@@ -253,7 +334,11 @@ def main() -> None:
     _, idata_wrong = fit(price, y, "normal")
     _, idata_correct = fit(price, y, "poisson")
 
-    wrong = {"a": draws(idata_wrong, "a"), "b": draws(idata_wrong, "b")}
+    wrong = {
+        "a": draws(idata_wrong, "a"),
+        "b": draws(idata_wrong, "b"),
+        "sigma": draws(idata_wrong, "sigma"),
+    }
     correct = {"a": draws(idata_correct, "a"), "b": draws(idata_correct, "b")}
 
     grid = np.linspace(PRICE_MIN, PRICE_MAX, 501)
@@ -313,6 +398,9 @@ def main() -> None:
     posteriors = plot_parameter_posteriors(
         wrong, correct, HERE / "wrong-likelihood-parameter-posteriors.png"
     )
+    outcome = plot_outcome_posterior(
+        y, price, wrong, correct, HERE / "wrong-likelihood-outcome-posterior.png"
+    )
     data_plot = plot_data(price, y, wrong, correct, HERE / "wrong-likelihood-data.png")
     profit_plot = plot_profit(
         wrong, correct, p_wrong, p_correct, HERE / "wrong-likelihood-profit.png"
@@ -322,6 +410,11 @@ def main() -> None:
         posteriors,
         SITE_ASSETS / posteriors.name,
         ARTIFACTS / "parameter_posteriors.png",
+    )
+    write_copies(
+        outcome,
+        SITE_ASSETS / outcome.name,
+        ARTIFACTS / "outcome_posterior.png",
     )
     write_copies(
         data_plot,
@@ -336,6 +429,7 @@ def main() -> None:
 
     print(json.dumps(summary, indent=2))
     print(f"wrote {posteriors}")
+    print(f"wrote {outcome}")
     print(f"wrote {profit_plot}")
 
 

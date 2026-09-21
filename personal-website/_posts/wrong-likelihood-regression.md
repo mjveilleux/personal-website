@@ -54,7 +54,7 @@ $$
 
 That is the decision. The posterior is not the end of the analysis — it is the input to the argmax.
 
-# Posteriors of $a$ and $b$
+# Posteriors of $a$, $b$, and $y$
 
 ![Posterior densities of intercept a and price slope b](/assets/blog/wrong-likelihood-parameter-posteriors.png)
 
@@ -64,6 +64,12 @@ That is the decision. The posterior is not the end of the analysis — it is the
 | $b$ | −0.19 | −0.39 (−0.55, −0.26) | −0.23 (−0.29, −0.17) |
 
 The Normal model uses a constant $\sigma$, so the high-volume cheap days dominate the fit. It concludes demand is much more elastic than it is. Poisson knows $\operatorname{Var}(y)=\lambda$ and keeps $b$ on the DGP.
+
+The same mismatch shows up in $y$. Each curve below is the posterior of a new day's purchases: draw $a$ and $b$ from that model's posterior, then draw $y$ from that model's sampling distribution at the observed prices, and mix. The bars are the histogram of the 40 days.
+
+![Posterior of units sold over the histogram of observed purchases](/assets/blog/wrong-likelihood-outcome-posterior.png)
+
+Poisson puts mass on the integers the data actually take, including the spike at zero. The Normal posterior of $y$ is a smooth density that leaks below zero — it thinks negative purchases are possible. That is the sampling model you then hand to the pricing argmax.
 
 # The pricing decision
 
