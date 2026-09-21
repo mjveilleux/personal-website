@@ -1,12 +1,3 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-node_modules
-.env
-tmp
-
-# Python / uv
 .venv/
 __pycache__/
 *.py[cod]
