@@ -45,6 +45,10 @@ ogImage:
 Post content here...
 ```
 
+## Deploy (Vercel)
+
+This directory is the Vercel app. In the Vercel project, set **Root Directory** to `personal-website`. Working files under `blogs/` stay in the same git repo and are not part of the production build.
+
 ## Stack
 
 - [Next.js](https://nextjs.org) with Turbopack
