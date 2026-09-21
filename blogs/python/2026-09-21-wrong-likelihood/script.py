@@ -1,12 +1,12 @@
 """
-Simulate y = a + b x + Student-t noise, then fit two Bayesian regressions
-that share the same linear mean and the same priors:
+Simulate y ~ Poisson(exp(a + b x)), then fit two Bayesian regressions
+that share the same mean function and the same priors on a and b:
 
-  - wrong likelihood:    y ~ Normal(a + b x, sigma)
-  - correct likelihood:  y ~ StudentT(nu, a + b x, sigma)
+  - wrong likelihood:    y ~ Normal(exp(a + b x), sigma)
+  - correct likelihood:  y ~ Poisson(exp(a + b x))
 
-The Normal model is pulled by the heavy tails, so the posteriors of a and b
-shift away from truth. The Student-t model recovers the DGP.
+The Normal model ignores that counts have variance equal to the mean,
+so the posteriors of a and b shift. The Poisson model recovers the DGP.
 
 Plots are matplotlib only (no ArviZ plots, no notebooks).
 """
@@ -33,17 +33,19 @@ SITE_ASSETS = HERE.parents[2] / "personal-website" / "public" / "assets" / "blog
 ARTIFACTS = Path("/opt/cursor/artifacts")
 
 TRUE_A = 1.0
-TRUE_B = 2.0
-TRUE_SIGMA = 0.8
-TRUE_NU = 3.0
-N = 60
-SEED = 77
+TRUE_B = 0.8
+N = 80
+SEED = 16
+
+
+def mean_fn(a, b, x):
+    return np.exp(a + b * x)
 
 
 def simulate(seed: int = SEED) -> tuple[np.ndarray, np.ndarray]:
     rng = np.random.default_rng(seed)
-    x = np.sort(rng.uniform(-2.5, 2.5, N))
-    y = TRUE_A + TRUE_B * x + rng.standard_t(TRUE_NU, size=N) * TRUE_SIGMA
+    x = np.sort(rng.uniform(-2.0, 1.0, N))
+    y = rng.poisson(mean_fn(TRUE_A, TRUE_B, x))
     return x, y
 
 
@@ -52,19 +54,12 @@ def fit(x: np.ndarray, y: np.ndarray, family: str, seed: int = SEED):
     with pm.Model(coords=coords) as model:
         a = pm.Normal("a", 0.0, 5.0)
         b = pm.Normal("b", 0.0, 5.0)
-        sigma = pm.HalfNormal("sigma", 2.0)
-        mu = a + b * x
+        mu = pm.math.exp(a + b * x)
         if family == "normal":
+            sigma = pm.HalfNormal("sigma", 2.0)
             pm.Normal("y", mu=mu, sigma=sigma, observed=y, dims="obs")
-        elif family == "student_t":
-            pm.StudentT(
-                "y",
-                nu=TRUE_NU,
-                mu=mu,
-                sigma=sigma,
-                observed=y,
-                dims="obs",
-            )
+        elif family == "poisson":
+            pm.Poisson("y", mu=mu, observed=y, dims="obs")
         else:
             raise ValueError(family)
         idata = pm.sample(
@@ -118,7 +113,7 @@ def plot_parameter_posteriors(
         ax.fill_between(xs, kde_w(xs), color=theme.COLORS.clay, alpha=0.45, linewidth=0)
         ax.plot(xs, kde_w(xs), color=theme.COLORS.clay, label="Normal likelihood")
         ax.fill_between(xs, kde_c(xs), color=theme.COLORS.pine, alpha=0.28, linewidth=0)
-        ax.plot(xs, kde_c(xs), color=theme.COLORS.pine, label="Student-t likelihood")
+        ax.plot(xs, kde_c(xs), color=theme.COLORS.pine, label="Poisson likelihood")
         ax.axvline(
             truth,
             color=theme.COLORS.ink,
@@ -146,24 +141,24 @@ def plot_parameter_posteriors(
 def plot_data(x: np.ndarray, y: np.ndarray, wrong: dict, correct: dict, path: Path) -> Path:
     theme.apply("sand")
     fig, ax = plt.subplots()
-    xs = np.linspace(x.min(), x.max(), 100)
-    ax.scatter(x, y, s=22, color=theme.COLORS.ink, alpha=0.55, label="Simulated y")
-    ax.plot(xs, TRUE_A + TRUE_B * xs, color=theme.COLORS.ink, linestyle=(0, (1.15, 2.2)), label="Truth")
+    xs = np.linspace(x.min(), x.max(), 200)
+    ax.scatter(x, y, s=22, color=theme.COLORS.ink, alpha=0.55, label="Simulated y", zorder=3)
+    ax.plot(xs, mean_fn(TRUE_A, TRUE_B, xs), color=theme.COLORS.ink, linestyle=(0, (1.15, 2.2)), label="Truth")
     ax.plot(
         xs,
-        wrong["a"].mean() + wrong["b"].mean() * xs,
+        mean_fn(wrong["a"].mean(), wrong["b"].mean(), xs),
         color=theme.COLORS.clay,
         label="Normal posterior mean",
     )
     ax.plot(
         xs,
-        correct["a"].mean() + correct["b"].mean() * xs,
+        mean_fn(correct["a"].mean(), correct["b"].mean(), xs),
         color=theme.COLORS.pine,
-        label="Student-t posterior mean",
+        label="Poisson posterior mean",
     )
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    theme.set_title(ax, "y = a + b x with Student-t noise")
+    theme.set_title(ax, "y ~ Poisson(exp(a + b x))")
     ax.legend(loc="upper left", frameon=False)
     fig.tight_layout()
     return theme.savefig(fig, path)
@@ -180,15 +175,15 @@ def main() -> None:
     )
 
     _, idata_wrong = fit(x, y, "normal")
-    _, idata_correct = fit(x, y, "student_t")
+    _, idata_correct = fit(x, y, "poisson")
 
     wrong = {"a": draws(idata_wrong, "a"), "b": draws(idata_wrong, "b")}
     correct = {"a": draws(idata_correct, "a"), "b": draws(idata_correct, "b")}
 
     summary = {
-        "truth": {"a": TRUE_A, "b": TRUE_B, "sigma": TRUE_SIGMA, "nu": TRUE_NU, "n": N, "seed": SEED},
+        "truth": {"a": TRUE_A, "b": TRUE_B, "n": N, "seed": SEED, "family": "poisson"},
         "normal": summarize(wrong["a"], wrong["b"]),
-        "student_t": summarize(correct["a"], correct["b"]),
+        "poisson": summarize(correct["a"], correct["b"]),
     }
     (HERE / "summary.json").write_text(json.dumps(summary, indent=2))
 

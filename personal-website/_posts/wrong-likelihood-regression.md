@@ -1,51 +1,51 @@
 ---
 title: "Wrong Likelihood, Different a and b"
 date: 2026-09-21
-tags: [bayes, pymc, likelihood, regression]
-excerpt: "If the sampling model is wrong, the posteriors of a and b are not the a and b you think they are."
+tags: [bayes, pymc, poisson, likelihood]
+excerpt: "Counts from a Poisson regression, fit as if they were Normal. The posteriors of a and b are not the same parameters."
 katex: true
 ---
 
-A linear regression is not just $y \sim a + bx$. The likelihood is the model. If we write down the wrong one, the posteriors of $a$ and $b$ move.
+A regression is not just $\mu = a + bx$. The likelihood is the model. If we write down the wrong one, the posteriors of $a$ and $b$ move.
 
 # The data
 
-Simulate $n=60$ points from a regression whose errors are Student-$t$ with $\nu = 3$, not Gaussian:
+Simulate $n=80$ counts from a Poisson regression. The mean is log-linear in $x$:
 
 $$
-y_i = a + b x_i + \sigma\,\varepsilon_i, \qquad \varepsilon_i \sim t_{3},
+y_i \sim \operatorname{Poisson}(\lambda_i), \qquad \lambda_i = \exp(a + b x_i)
 $$
 
-with $a=1$, $b=2$, $\sigma=0.8$. Heavy tails are allowed. One draw lands around $y \approx -21$.
+with $a=1$ and $b=0.8$. Variance equals the mean, so the cloud fans out as $\lambda$ grows. There are zeros on the left and counts up to 13 on the right.
 
-![Simulated regression with a heavy-tailed residual](/assets/blog/wrong-likelihood-data.png)
+![Simulated Poisson counts with log-linear mean](/assets/blog/wrong-likelihood-data.png)
 
 # Two models, same mean, same priors
 
-Both models use $\mu_i = a + b x_i$ and the same weakly informative priors on $a$, $b$, and $\sigma$. The only change is the sampling statement.
+Both models use $\lambda_i = \exp(a + b x_i)$ and the same weakly informative priors on $a$ and $b$. The only change is the sampling statement.
 
-Wrong likelihood (what we reach for by default):
+Wrong likelihood (treat counts as Gaussian):
 
 $$
-y_i \sim \operatorname{Normal}(\mu_i, \sigma)
+y_i \sim \operatorname{Normal}(\lambda_i, \sigma)
 $$
 
 Correct likelihood (the DGP):
 
 $$
-y_i \sim t_{3}(\mu_i,\,\sigma)
+y_i \sim \operatorname{Poisson}(\lambda_i)
 $$
 
 # Posteriors of $a$ and $b$
 
 ![Posterior densities of intercept a and slope b](/assets/blog/wrong-likelihood-parameter-posteriors.png)
 
-| Parameter | Truth | Normal mean (95% CrI) | Student-$t$ mean (95% CrI) |
-|-----------|-------|------------------------|----------------------------|
-| $a$ | 1.00 | 0.57 (−0.16, 1.31) | 0.89 (0.60, 1.17) |
-| $b$ | 2.00 | 2.14 (1.62, 2.65) | 2.02 (1.82, 2.21) |
+| Parameter | Truth | Normal mean (95% CrI) | Poisson mean (95% CrI) |
+|-----------|-------|------------------------|------------------------|
+| $a$ | 1.00 | 0.81 (0.53, 1.04) | 1.00 (0.85, 1.14) |
+| $b$ | 0.80 | 1.28 (0.96, 1.66) | 0.88 (0.70, 1.07) |
 
-The Normal model treats that tail point as a typical Gaussian residual, so it pays a quadratic penalty and drags $a$ down. The posterior is wide enough that $a=0$ is still plausible. The Student-$t$ likelihood expects occasional extremes, down-weights them, and puts the mass of $a$ and $b$ on the truth.
+The Normal model uses a constant $\sigma$, so the high-$\lambda$ points on the right dominate the fit and pull $b$ up. The 95% interval for $b$ does not even contain the truth. Poisson knows $\operatorname{Var}(y)=\lambda$, down-weights those noisy counts, and puts $a$ and $b$ on the DGP.
 
 That is the whole point of writing the correct likelihood: $a$ and $b$ are only the intercept and slope of *that* sampling model. Change the likelihood and you are estimating different parameters, even when the mean function looks identical.
 
@@ -59,12 +59,12 @@ import pymc as pm
 with pm.Model():
     a = pm.Normal("a", 0, 5)
     b = pm.Normal("b", 0, 5)
-    sigma = pm.HalfNormal("sigma", 2)
-    mu = a + b * x
+    lam = pm.math.exp(a + b * x)
 
     # wrong
-    pm.Normal("y", mu=mu, sigma=sigma, observed=y)
+    sigma = pm.HalfNormal("sigma", 2)
+    pm.Normal("y", mu=lam, sigma=sigma, observed=y)
 
     # correct
-    # pm.StudentT("y", nu=3, mu=mu, sigma=sigma, observed=y)
+    # pm.Poisson("y", mu=lam, observed=y)
 ```
