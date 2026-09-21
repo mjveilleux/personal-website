@@ -51,7 +51,7 @@ That is the whole point of writing the correct likelihood: $a$ and $b$ are only 
 
 # Code
 
-PyMC, no notebooks. Full script is in `blogs/python/2026-09-21-wrong-likelihood/`.
+PyMC and matplotlib, no notebooks. Full script is in `blogs/python/2026-09-21-wrong-likelihood/`.
 
 ```python
 import pymc as pm

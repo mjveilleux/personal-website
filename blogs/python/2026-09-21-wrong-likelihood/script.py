@@ -7,6 +7,8 @@ that share the same linear mean and the same priors:
 
 The Normal model is pulled by the heavy tails, so the posteriors of a and b
 shift away from truth. The Student-t model recovers the DGP.
+
+Plots are matplotlib only (no ArviZ plots, no notebooks).
 """
 
 from __future__ import annotations
@@ -15,6 +17,7 @@ import json
 import sys
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pymc as pm
 from scipy.stats import gaussian_kde
@@ -97,7 +100,7 @@ def plot_parameter_posteriors(
     path: Path,
 ) -> Path:
     theme.apply("sand")
-    fig, axes = theme.subplots(1, 2, figsize=(theme.SPACE.content_width_in, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=(theme.SPACE.content_width_in, 3.6))
 
     specs = (
         ("a", TRUE_A, "Intercept a"),
@@ -142,7 +145,7 @@ def plot_parameter_posteriors(
 
 def plot_data(x: np.ndarray, y: np.ndarray, wrong: dict, correct: dict, path: Path) -> Path:
     theme.apply("sand")
-    fig, ax = theme.subplots()
+    fig, ax = plt.subplots()
     xs = np.linspace(x.min(), x.max(), 100)
     ax.scatter(x, y, s=22, color=theme.COLORS.ink, alpha=0.55, label="Simulated y")
     ax.plot(xs, TRUE_A + TRUE_B * xs, color=theme.COLORS.ink, linestyle=(0, (1.15, 2.2)), label="Truth")

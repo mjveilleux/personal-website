@@ -330,18 +330,11 @@ _active: ThemeName = "sand"
 
 
 def apply(name: ThemeName = "sand") -> ThemeName:
-    """Set Matplotlib (and ArviZ, if installed) to ``sand`` or ``pine``."""
+    """Set Matplotlib rcParams to ``sand`` or ``pine``."""
     global _active
     body, display = _font_names()
     plt.rcParams.update(_theme_rc(name, body, display))
     _active = name
-    try:
-        import arviz as az
-
-        az.style.use("arviz-doc" if name == "sand" else "arviz-darkgrid")
-        plt.rcParams.update(_theme_rc(name, body, display))
-    except Exception:
-        pass
     return name
 
 
