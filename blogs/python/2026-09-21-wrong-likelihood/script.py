@@ -1,0 +1,215 @@
+"""
+Simulate y = a + b x + Student-t noise, then fit two Bayesian regressions
+that share the same linear mean and the same priors:
+
+  - wrong likelihood:    y ~ Normal(a + b x, sigma)
+  - correct likelihood:  y ~ StudentT(nu, a + b x, sigma)
+
+The Normal model is pulled by the heavy tails, so the posteriors of a and b
+shift away from truth. The Student-t model recovers the DGP.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pymc as pm
+from scipy.stats import gaussian_kde
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import theme
+
+HERE = Path(__file__).resolve().parent
+SITE_ASSETS = HERE.parents[2] / "personal-website" / "public" / "assets" / "blog"
+ARTIFACTS = Path("/opt/cursor/artifacts")
+
+TRUE_A = 1.0
+TRUE_B = 2.0
+TRUE_SIGMA = 0.8
+TRUE_NU = 3.0
+N = 60
+SEED = 77
+
+
+def simulate(seed: int = SEED) -> tuple[np.ndarray, np.ndarray]:
+    rng = np.random.default_rng(seed)
+    x = np.sort(rng.uniform(-2.5, 2.5, N))
+    y = TRUE_A + TRUE_B * x + rng.standard_t(TRUE_NU, size=N) * TRUE_SIGMA
+    return x, y
+
+
+def fit(x: np.ndarray, y: np.ndarray, family: str, seed: int = SEED):
+    coords = {"obs": np.arange(len(x))}
+    with pm.Model(coords=coords) as model:
+        a = pm.Normal("a", 0.0, 5.0)
+        b = pm.Normal("b", 0.0, 5.0)
+        sigma = pm.HalfNormal("sigma", 2.0)
+        mu = a + b * x
+        if family == "normal":
+            pm.Normal("y", mu=mu, sigma=sigma, observed=y, dims="obs")
+        elif family == "student_t":
+            pm.StudentT(
+                "y",
+                nu=TRUE_NU,
+                mu=mu,
+                sigma=sigma,
+                observed=y,
+                dims="obs",
+            )
+        else:
+            raise ValueError(family)
+        idata = pm.sample(
+            draws=1000,
+            tune=1000,
+            chains=4,
+            cores=4,
+            target_accept=0.9,
+            random_seed=seed,
+            progressbar=False,
+        )
+    return model, idata
+
+
+def draws(idata, name: str) -> np.ndarray:
+    return np.asarray(idata.posterior[name]).ravel()
+
+
+def summarize(draws_a: np.ndarray, draws_b: np.ndarray) -> dict:
+    def stats(arr: np.ndarray) -> dict:
+        return {
+            "mean": float(arr.mean()),
+            "q025": float(np.quantile(arr, 0.025)),
+            "q975": float(np.quantile(arr, 0.975)),
+        }
+
+    return {"a": stats(draws_a), "b": stats(draws_b)}
+
+
+def plot_parameter_posteriors(
+    wrong: dict[str, np.ndarray],
+    correct: dict[str, np.ndarray],
+    path: Path,
+) -> Path:
+    theme.apply("sand")
+    fig, axes = theme.subplots(1, 2, figsize=(theme.SPACE.content_width_in, 3.6))
+
+    specs = (
+        ("a", TRUE_A, "Intercept a"),
+        ("b", TRUE_B, "Slope b"),
+    )
+    for ax, (name, truth, title) in zip(axes, specs):
+        w = wrong[name]
+        c = correct[name]
+        lo = min(w.min(), c.min(), truth) - 0.15
+        hi = max(w.max(), c.max(), truth) + 0.15
+        xs = np.linspace(lo, hi, 400)
+
+        kde_w = gaussian_kde(w)
+        kde_c = gaussian_kde(c)
+        ax.fill_between(xs, kde_w(xs), color=theme.COLORS.clay, alpha=0.45, linewidth=0)
+        ax.plot(xs, kde_w(xs), color=theme.COLORS.clay, label="Normal likelihood")
+        ax.fill_between(xs, kde_c(xs), color=theme.COLORS.pine, alpha=0.28, linewidth=0)
+        ax.plot(xs, kde_c(xs), color=theme.COLORS.pine, label="Student-t likelihood")
+        ax.axvline(
+            truth,
+            color=theme.COLORS.ink,
+            linestyle=(0, (1.15, 2.2)),
+            linewidth=1.35,
+            label="Truth",
+        )
+        ax.set_xlabel(name)
+        ax.set_ylabel("Posterior density")
+        theme.set_title(ax, title)
+
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="upper center",
+        ncol=3,
+        bbox_to_anchor=(0.5, 1.04),
+        frameon=False,
+    )
+    fig.tight_layout()
+    return theme.savefig(fig, path)
+
+
+def plot_data(x: np.ndarray, y: np.ndarray, wrong: dict, correct: dict, path: Path) -> Path:
+    theme.apply("sand")
+    fig, ax = theme.subplots()
+    xs = np.linspace(x.min(), x.max(), 100)
+    ax.scatter(x, y, s=22, color=theme.COLORS.ink, alpha=0.55, label="Simulated y")
+    ax.plot(xs, TRUE_A + TRUE_B * xs, color=theme.COLORS.ink, linestyle=(0, (1.15, 2.2)), label="Truth")
+    ax.plot(
+        xs,
+        wrong["a"].mean() + wrong["b"].mean() * xs,
+        color=theme.COLORS.clay,
+        label="Normal posterior mean",
+    )
+    ax.plot(
+        xs,
+        correct["a"].mean() + correct["b"].mean() * xs,
+        color=theme.COLORS.pine,
+        label="Student-t posterior mean",
+    )
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    theme.set_title(ax, "y = a + b x with Student-t noise")
+    ax.legend(loc="upper left", frameon=False)
+    fig.tight_layout()
+    return theme.savefig(fig, path)
+
+
+def main() -> None:
+    x, y = simulate()
+    np.savetxt(
+        HERE / "data.csv",
+        np.column_stack([x, y]),
+        delimiter=",",
+        header="x,y",
+        comments="",
+    )
+
+    _, idata_wrong = fit(x, y, "normal")
+    _, idata_correct = fit(x, y, "student_t")
+
+    wrong = {"a": draws(idata_wrong, "a"), "b": draws(idata_wrong, "b")}
+    correct = {"a": draws(idata_correct, "a"), "b": draws(idata_correct, "b")}
+
+    summary = {
+        "truth": {"a": TRUE_A, "b": TRUE_B, "sigma": TRUE_SIGMA, "nu": TRUE_NU, "n": N, "seed": SEED},
+        "normal": summarize(wrong["a"], wrong["b"]),
+        "student_t": summarize(correct["a"], correct["b"]),
+    }
+    (HERE / "summary.json").write_text(json.dumps(summary, indent=2))
+
+    SITE_ASSETS.mkdir(parents=True, exist_ok=True)
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+
+    posterior_name = "wrong-likelihood-parameter-posteriors.png"
+    data_name = "wrong-likelihood-data.png"
+    paths = [
+        HERE / posterior_name,
+        SITE_ASSETS / posterior_name,
+        ARTIFACTS / "parameter_posteriors.png",
+    ]
+    plot = plot_parameter_posteriors(wrong, correct, paths[0])
+    for dest in paths[1:]:
+        dest.write_bytes(plot.read_bytes())
+
+    data_plot = plot_data(x, y, wrong, correct, HERE / data_name)
+    (SITE_ASSETS / data_name).write_bytes(data_plot.read_bytes())
+    (ARTIFACTS / "simulated_regression_data.png").write_bytes(data_plot.read_bytes())
+
+    print(json.dumps(summary, indent=2))
+    print(f"wrote {plot}")
+
+
+if __name__ == "__main__":
+    main()

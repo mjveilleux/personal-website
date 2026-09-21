@@ -45,4 +45,4 @@ When the piece is ready, put the Markdown in `personal-website/_posts/`.
 
 ## Stack
 
-numpy, pandas, matplotlib, scipy, plus a website-matched matplotlib theme. Add heavier tools (PyMC, CmdStanPy, etc.) per post with `uv add` when you need them.
+numpy, pandas, matplotlib, scipy, PyMC, plus a website-matched matplotlib theme.
